@@ -10,13 +10,13 @@ if __name__ == "__main__":
     #    print("usage: python main.py <slice-path> <pattern-path>")
     #    exit()
 
-    slicePath = "slices\\basic-flow.py"#sys.argv[1]
+    #slicePath = "slices\\basic-flow.py"#sys.argv[1]
+    slicePath = "slices\\Specification\\slices\\1a-basic-flow.patterns.json"#sys.argv[1]
+
     patternPath = "slices\\basic-flow.patterns.json"#sys.argv[2]
 
-    with open(slicePath, 'r') as f:
-        slice = f.read()
-    ast = extract_ast(json.loads(slice))
-
+    ast = extract_ast(slicePath)
+    
     with open(patternPath, 'r') as f:
         pattern = f.read()
 
