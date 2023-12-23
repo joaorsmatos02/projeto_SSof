@@ -1,6 +1,6 @@
 class Pattern:
     def __init__(self, pattern: dict):
-        self.name = pattern['vulnerability']
+        self.vulnerability = pattern['vulnerability']
         self.sources = pattern['sources']
         self.sanitizers = pattern['sanitizers']
         self.sinks = pattern['sinks']
