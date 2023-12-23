@@ -12,8 +12,8 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": [
-                "slices/Specification/slices/1a-basic-flow.py",
-                "slices/Specification/slices/1a-basic-flow.patterns.json"
+                "slices/1a-basic-flow.py",
+                "slices/1a-basic-flow.patterns.json"
             ]
         }
     ]
