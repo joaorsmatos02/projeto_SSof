@@ -63,7 +63,7 @@ if __name__ == "__main__":
     #Policy init
     policy = Policy(pattern_dict)
     multilabelling = MultiLabelling()
-    vulnerability = Vulnerability()
+    vulnerability = Vulnerability(policy)
 
     ast_dict = extract_ast(slice_content)
     #print(json.dumps(ast_dict, indent=4))

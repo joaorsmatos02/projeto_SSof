@@ -1,4 +1,4 @@
-import Label
+from Label import Label
 
 class MultiLabel:
     def __init__(self):

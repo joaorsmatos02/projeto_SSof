@@ -1,4 +1,4 @@
-import Label
+from Label import Label
 from MultiLabel import MultiLabel
 from Policy import Policy
 class Name:
@@ -9,6 +9,9 @@ class Name:
     def __repr__(self):
         return f"Name({self.value})"
     
+    def get_name_value(self):
+        return self.value
+    
     def eval(self,  policy, multilabelling, vulnerabilities):
 
         print(repr(self))
@@ -17,7 +20,7 @@ class Name:
         multiLabel = MultiLabel()
 
         for pattern in patterns_where_is_source:
-            label = Label(pattern)
+            label = Label()
             label.add_source(self.value, self.line_number)
             multiLabel.add_label(pattern.get_vulnerability(), label)
 

@@ -9,7 +9,7 @@ class MultiLabelling:
 
     def get_Multilabel(self, variable_name):    
         if variable_name in self.multilabels_mapping:
-            return self.multilabels_mapping.get(variable_name.value, None) 
+            return self.multilabels_mapping.get(variable_name, None) 
         
         return None
 

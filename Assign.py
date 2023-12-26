@@ -25,7 +25,7 @@ class Assign:
             for pattern in patterns_where_target_is_sink:
                 if target_multilabel.get_label(pattern.get_vulnerability()).len > 0:
                     # significa que temos de adicionar uma vulnerabilidade
-                    vulnerabilities.create_vulnerability(multilabelling, pattern, target, self.line_number) # funçao tem de ir buscar o label do padrao para cada argumento 
+                    vulnerabilities.create_vulnerability(multilabelling, pattern, target, self.line_number, target) # funçao tem de ir buscar o label do padrao para cada argumento 
                                                                                                                     #e escrever as vulnerabilidades com target é o sink
 
         return

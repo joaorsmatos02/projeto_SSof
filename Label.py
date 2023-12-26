@@ -29,17 +29,19 @@ class Label:
     # Combinor for combining two labels
     def combine_labels(self, other_label):
         new_label = Label() 
-        new_label.sources = self.sources
+        new_label.sources = list(self.sources)
+        #new_label.sources = self.sources
+        
         # quando a source é a mesma de uma ja existente, temos de atualizar a linha 
         for source in other_label.sources:
             inside = False
-            for source1 in new_label.sources:
+            for i, source1 in enumerate(new_label.sources):
                 if source[0] == source1[0]:
-                    source1[1] = source[1]
+                    new_label.sources[i] = (source[0], source[1])
                     inside = True
                     
             if not inside:
                 new_label.sources.append(source)
 
-        new_label.sanitizers = self.sanitizers.union(other_label.sanitizers)
+        new_label.sanitizers = self.sanitizers + (other_label.sanitizers)
         return new_label
