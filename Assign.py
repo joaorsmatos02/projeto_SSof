@@ -18,8 +18,9 @@ class Assign:
         target_multilabelling = multilabelling.get_Multilabel(self.target)
 
         for argument in arguments:
-            target_multilabelling.combine_multilabels(multilabelling.get_Multilabel(argument))
+            target_multilabelling.update_Multilabel(self.target, multilabelling.get_Multilabel(argument))
 
+                
         patterns_where_target_is_sink = policy.get_patterns_with_sink(self.target)
         
         if patterns_where_target_is_sink.len > 0:

@@ -32,10 +32,14 @@ class Label:
         new_label.sources = self.sources
         # quando a source é a mesma de uma ja existente, temos de atualizar a linha 
         for source in other_label.sources:
+            inside = False
             for source1 in new_label.sources:
                 if source[0] == source1[0]:
                     source1[1] = source[1]
-            new_label.sources.append(source)
+                    inside = True
+                    
+            if not inside:
+                new_label.sources.append(source)
 
         new_label.sanitizers = self.sanitizers.union(other_label.sanitizers)
         return new_label
