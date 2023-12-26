@@ -20,10 +20,10 @@ class MultiLabel:
         if pattern_name in self.labels:
             self.labels[pattern_name].add_sanitizer(sanitizer_name, line_number)
 
-    def combine_labels(self, other_label):
+    def combine_multilabels(self, other_multilabel):
         new_multi_label = MultiLabel()
         for pattern_name, label in self.labels.items():
             new_multi_label.add_label(pattern_name, label)
-        for pattern_name, label in other_label.labels.items():
+        for pattern_name, label in other_multilabel.labels.items():
             new_multi_label.add_label(pattern_name, label)
         return new_multi_label
