@@ -24,6 +24,9 @@ class MultiLabel:
         new_multi_label = MultiLabel()
         for pattern_name, label in self.labels.items():
             new_multi_label.add_label(pattern_name, label)
-        for pattern_name, label in other_multilabel.labels.items():
-            new_multi_label.add_label(pattern_name, label)
+            
+        if (other_multilabel != None) :
+            for pattern_name, label in other_multilabel.labels.items():
+                new_multi_label.add_label(pattern_name, label)
+        
         return new_multi_label

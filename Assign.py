@@ -13,16 +13,14 @@ class Assign:
 
         print(repr(self))
         target = self.target.eval(policy, multilabelling, vulnerabilities)
-        arguments = self.arguments.eval(policy, multilabelling, vulnerabilities)
-
+        arguments = [self.arguments.eval(policy, multilabelling, vulnerabilities)]
 
         for argument in arguments:
-            multilabelling.update_Multilabel(self.target, multilabelling.get_Multilabel(argument))
+           multilabelling.update_Multilabel(target, multilabelling.get_Multilabel(argument))
 
-                
-        patterns_where_target_is_sink = policy.get_patterns_with_sink(self.target)
+        patterns_where_target_is_sink = policy.get_patterns_where_value_is_sink(self.target)
         
-        if patterns_where_target_is_sink.len > 0:
+        if len(patterns_where_target_is_sink) > 0:
             target_multilabel = multilabelling.get_Multilabel(self.target)
             for pattern in patterns_where_target_is_sink:
                 if target_multilabel.get_label(pattern.get_vulnerability()).len > 0:

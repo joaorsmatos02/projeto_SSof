@@ -1,10 +1,10 @@
 import Label
-import MultiLabel
-import Policy
+from MultiLabel import MultiLabel
+from Policy import Policy
 class Name:
     def __init__(self, value, line_number):
         self.value = value
-        self.line_number
+        self.line_number = line_number
 
     def __repr__(self):
         return f"Name({self.value})"
