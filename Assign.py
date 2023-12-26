@@ -18,12 +18,12 @@ class Assign:
         for argument in arguments:
            multilabelling.update_Multilabel(target, multilabelling.get_Multilabel(argument))
 
-        patterns_where_target_is_sink = policy.get_patterns_where_value_is_sink(self.target)
+        patterns_where_target_is_sink = policy.get_patterns_where_value_is_sink(target)
         
         if len(patterns_where_target_is_sink) > 0:
-            target_multilabel = multilabelling.get_Multilabel(self.target)
+            target_multilabel = multilabelling.get_Multilabel(target)
             for pattern in patterns_where_target_is_sink:
-                if target_multilabel.get_label(pattern.get_vulnerability()).len > 0:
+                if (target_multilabel.get_label(pattern.get_vulnerability())) != [] :
                     # significa que temos de adicionar uma vulnerabilidade
                     vulnerabilities.create_vulnerability(multilabelling, pattern, target, self.line_number, target) # funçao tem de ir buscar o label do padrao para cada argumento 
                                                                                                                     #e escrever as vulnerabilidades com target é o sink

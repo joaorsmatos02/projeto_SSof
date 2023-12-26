@@ -79,7 +79,7 @@ if __name__ == "__main__":
     for line in tree:
         line.eval(policy, multilabelling, vulnerability)
 
-
+    print(vulnerability.get_vulnerabilities_print())
 
 # criar multilabel com os padroes do policy, passamos a policy e combinar labels quando temos dois argumentos, retornando, e no fim da linha atualizar multilabelling
 # classes com mais de um argumento sem ser name e constant temos de chamar o eval do argumentos        
