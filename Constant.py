@@ -1,7 +1,7 @@
 class Constant:
     def __init__(self, value, line_number):
         self.value = value
-        self.line_number
+        self.line_number = line_number
 
     def __repr__(self):
         return f"Constant({self.value})"
@@ -9,4 +9,4 @@ class Constant:
     def eval(self, policy, multilabelling, vulnerabilities):
 
         print(repr(self))
-        return None
+        return self.value

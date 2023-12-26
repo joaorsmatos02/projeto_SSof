@@ -2,21 +2,20 @@ import sys
 import json
 from Pattern import Pattern
 from AST_parser import extract_ast
-import Constant
-import Policy
-import MultiLabelling
-import Vulnerability
-import Assign
-import Call
-import Expr
-import Name
+from Constant import Constant
+from Policy import Policy
+from MultiLabelling import MultiLabelling
+from Vulnerability import Vulnerability
+from Assign import Assign
+from Call import Call
+from Expr import Expr
+from Name import Name
 
 def run_ast_dict(ast_dict):
-
     if ast_dict['ast_type'] == "Constant":
         return Constant(ast_dict["value"], ast_dict["end_lineno"])
     elif ast_dict['ast_type'] == "Name":    
-        return Name(ast_dict["id"])
+        return Name(ast_dict["id"], ast_dict["end_lineno"])
     elif ast_dict['ast_type'] == "BinOp": 
         return
     elif ast_dict['ast_type'] == "UnaryOp":  
@@ -32,7 +31,7 @@ def run_ast_dict(ast_dict):
     elif ast_dict['ast_type'] == "Attribute":    
         return 
     elif ast_dict['ast_type'] == "Expr":
-        return Expr(run_ast_dict(ast_dict["value"]))
+        return Expr(run_ast_dict(ast_dict["value"]), ast_dict["end_lineno"])
     elif ast_dict['ast_type'] == "Assign":  
         target = run_ast_dict(ast_dict["targets"][0])
         values_dict = run_ast_dict(ast_dict["value"])
@@ -54,11 +53,6 @@ if __name__ == "__main__":
     with open(sys.argv[2], "r") as fp:
         patterns = json.load(fp)
 
-    # Print patterns
-    print(json.dumps(patterns, indent=4))
-
-    
-
     pattern_dict = []
 
     for p in patterns:
@@ -66,21 +60,24 @@ if __name__ == "__main__":
         pattern_dict.append(pattern)
         # Do something with the pattern if needed
 
-    #inicializar policy
-    policy = Policy.Policy(pattern_dict)
-    multilabelling = MultiLabelling.MultiLabelling()
-    vulnerability = Vulnerability.Vulnerability()
+    #Policy init
+    policy = Policy(pattern_dict)
+    multilabelling = MultiLabelling()
+    vulnerability = Vulnerability()
 
     ast_dict = extract_ast(slice_content)
-    print(json.dumps(ast_dict, indent=4))
-    tree = run_ast_dict(ast_dict)
-    print(tree.__repr__)
+    #print(json.dumps(ast_dict, indent=4))
+    
+    ast_dict_body = ast_dict.get('body', [])
+    tree = []
+    for node in ast_dict_body :
+        tree.append(run_ast_dict(node))
+    
+    print(tree)
 
-    line_number = 1
+    
     for line in tree:
-        line.eval(policy, multilabelling, vulnerability, line_number)
-        line_number = line_number + 1
-
+        line.eval(policy, multilabelling, vulnerability)
 
 
 

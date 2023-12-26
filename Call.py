@@ -10,7 +10,8 @@ class Call:
         return f"Call({self.function_dict} , {self.arguments_dict} )"
     
     def eval(self,  policy, multilabelling, vulnerabilities):
-        arguments = self.arguments_dict.eval(policy, multilabelling, vulnerabilities)
+        if self.arguments_dict != []:
+            arguments = self.arguments_dict.eval(policy, multilabelling, vulnerabilities)
 
         patterns_where_fucn_is_sink = policy.get_patterns_where_value_is_sink(self.function_dict)
         patterns_where_fucn_is_sanitizer = policy.get_patterns_where_value_is_sanitizer(self.function_dict)

@@ -8,7 +8,11 @@ class MultiLabelling:
         self.multilabels_mapping[variable_name] = multi_label
 
     def get_Multilabel(self, variable_name):    
-        return self.multilabels_mapping.get(variable_name, None)
+        if variable_name in self.multilabels_mapping:
+            return self.multilabels_mapping.get(variable_name.value, None) 
+        
+        return None
+
 
     def update_Multilabel(self, variable_name, multi_label):
         if variable_name in self.multilabels_mapping:
