@@ -11,6 +11,9 @@ class MultiLabel:
 
     def get_label(self, pattern_name):
         return self.labels.get(pattern_name, None)
+    
+    def get_labels(self):
+        return self.labels
 
     def add_source(self, pattern_name, source_name, line_number):
         if pattern_name in self.labels:

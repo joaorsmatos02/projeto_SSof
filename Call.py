@@ -1,4 +1,4 @@
-import Label
+from Label import Label
 from MultiLabel import MultiLabel
 class Call:
     def __init__(self, function_dict, arguments_dict, line_number):
@@ -20,6 +20,15 @@ class Call:
                     arguments.extend(argument_eval)
                 else:
                     arguments.append(argument_eval)
+                    
+                    
+            all_patterns = policy.getAllPatterns()
+            for argument in arguments:
+                if multilabelling.get_Multilabel(argument) != None and multilabelling.get_Multilabel(argument).get_labels() == {} :
+                    for pattern in all_patterns:
+                        new_label = Label()
+                        new_label.add_source(argument, self.line_number)
+                        multilabelling.get_Multilabel(argument).add_label(pattern.get_vulnerability(), new_label)
                 
         patterns_where_func_is_sink = policy.get_patterns_where_value_is_sink(self.function_dict.get_name_value())
         patterns_where_func_is_sanitizer = policy.get_patterns_where_value_is_sanitizer(self.function_dict.get_name_value())

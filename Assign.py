@@ -1,4 +1,5 @@
 import MultiLabelling
+from Label import Label
 import Pattern
 class Assign:
     def __init__(self, target, arguments_dict, line_number):
@@ -14,9 +15,23 @@ class Assign:
         print(repr(self))
         target = self.target.eval(policy, multilabelling, vulnerabilities)
         arguments = [self.arguments.eval(policy, multilabelling, vulnerabilities)]
-
+        
+        all_patterns = policy.getAllPatterns()
         for argument in arguments:
-           multilabelling.update_Multilabel(target, multilabelling.get_Multilabel(argument))
+            if multilabelling.get_Multilabel(argument) != None and multilabelling.get_Multilabel(argument).get_labels() == {} :
+                for pattern in all_patterns:
+                    new_label = Label()
+                    new_label.add_source(argument, self.line_number)
+                    multilabelling.get_Multilabel(argument).add_label(pattern.get_vulnerability(), new_label)
+            
+        if multilabelling.get_Multilabel(target) != None and multilabelling.get_Multilabel(target).get_labels() == {}:
+            for pattern in all_patterns:
+                new_label = Label()
+                multilabelling.get_Multilabel(target).add_label(pattern.get_vulnerability(), new_label)
+    
+        
+        for argument in arguments:    
+            multilabelling.update_Multilabel(target, multilabelling.get_Multilabel(argument))
 
         patterns_where_target_is_sink = policy.get_patterns_where_value_is_sink(target)
         
