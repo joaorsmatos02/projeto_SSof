@@ -21,8 +21,13 @@ class BinOp:
         else:
             arguments.append(left_result)
         
-        arguments.append(self.right.eval(policy, multilabelling, vulnerabilities))
+        right_result = self.right.eval(policy, multilabelling, vulnerabilities)
         
+        if isinstance(right_result, list):
+            arguments.extend(right_result)
+        else:
+            arguments.append(right_result)
+
         return arguments
         
         
