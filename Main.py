@@ -10,6 +10,7 @@ from Assign import Assign
 from Call import Call
 from Expr import Expr
 from Name import Name
+from BinOp import BinOp
 
 def run_ast_dict(ast_dict):
     if ast_dict['ast_type'] == "Constant":
@@ -17,7 +18,7 @@ def run_ast_dict(ast_dict):
     elif ast_dict['ast_type'] == "Name":    
         return Name(ast_dict["id"], ast_dict["end_lineno"])
     elif ast_dict['ast_type'] == "BinOp": 
-        return
+        return BinOp(run_ast_dict(ast_dict["left"]), ast_dict["op"], run_ast_dict(ast_dict["right"]), ast_dict["end_lineno"])
     elif ast_dict['ast_type'] == "UnaryOp":  
         return
     elif ast_dict['ast_type'] == "BoolOp":    
@@ -66,7 +67,7 @@ if __name__ == "__main__":
     vulnerability = Vulnerability(policy)
 
     ast_dict = extract_ast(slice_content)
-    #print(json.dumps(ast_dict, indent=4))
+    print(json.dumps(ast_dict, indent=4))
     
     ast_dict_body = ast_dict.get('body', [])
     tree = []
@@ -74,7 +75,6 @@ if __name__ == "__main__":
         tree.append(run_ast_dict(node))
     
     print(tree)
-
     
     for line in tree:
         line.eval(policy, multilabelling, vulnerability)

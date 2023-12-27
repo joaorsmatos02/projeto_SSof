@@ -14,7 +14,12 @@ class Call:
         arguments = [] 
         if self.arguments_dict != []:
             for argument in self.arguments_dict:
-                arguments.append(argument.eval(policy, multilabelling, vulnerabilities))
+                argument_eval = argument.eval(policy, multilabelling, vulnerabilities)
+                
+                if isinstance(argument_eval, list):
+                    arguments.extend(argument_eval)
+                else:
+                    arguments.append(argument_eval)
                 
         patterns_where_func_is_sink = policy.get_patterns_where_value_is_sink(self.function_dict.get_name_value())
         patterns_where_func_is_sanitizer = policy.get_patterns_where_value_is_sanitizer(self.function_dict.get_name_value())
@@ -24,7 +29,7 @@ class Call:
         if len(patterns_where_func_is_sink) > 0:
             for pattern in patterns_where_func_is_sink:
                 for argument in arguments:
-                    if (multilabelling.get_Multilabel(argument).get_label(pattern.get_vulnerability())) != None:
+                     if  multilabelling.get_Multilabel(argument) != None and (multilabelling.get_Multilabel(argument).get_label(pattern.get_vulnerability())) != None:
                         vulnerabilities.create_vulnerability(multilabelling, pattern, self.function_dict.get_name_value(), self.line_number, argument)
          
 
