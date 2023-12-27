@@ -12,8 +12,8 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": [
-                "slices/2-expr-binary-ops.py",
-                "slices/2-expr-binary-ops.patterns.json"
+                "slices/3c-expr-attributes.py",
+                "slices/3c-expr-attributes.patterns.json"
             ]
         }
     ]

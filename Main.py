@@ -1,5 +1,6 @@
 import sys
 import json
+from Attribute import Attribute
 from BoolOp import BoolOp
 from Compare import Compare
 from Pattern import Pattern
@@ -32,8 +33,8 @@ def run_ast_dict(ast_dict):
         function_dict = run_ast_dict(ast_dict["func"])
         arguments_dict = [run_ast_dict(arg) for arg in ast_dict["args"]]
         return Call(function_dict, arguments_dict, ast_dict["end_lineno"])
-    elif ast_dict['ast_type'] == "Attribute":    
-        return 
+    elif ast_dict['ast_type'] == "Attribute":
+        return Attribute(run_ast_dict(ast_dict["value"]), Name(f"{ast_dict['value']}.{ast_dict['attr']}", ast_dict["end_lineno"]), ast_dict["end_lineno"])
     elif ast_dict['ast_type'] == "Expr":
         return Expr(run_ast_dict(ast_dict["value"]), ast_dict["end_lineno"])
     elif ast_dict['ast_type'] == "Assign":  
