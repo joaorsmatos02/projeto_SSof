@@ -24,15 +24,6 @@ class Call:
         patterns_where_func_is_sink = policy.get_patterns_where_value_is_sink(self.function_dict.get_name_value())
         patterns_where_func_is_sanitizer = policy.get_patterns_where_value_is_sanitizer(self.function_dict.get_name_value())
         
-        ## ver se é sink
-
-        if len(patterns_where_func_is_sink) > 0:
-            for pattern in patterns_where_func_is_sink:
-                for argument in arguments:
-                     if  multilabelling.get_Multilabel(argument) != None and (multilabelling.get_Multilabel(argument).get_label(pattern.get_vulnerability())) != None:
-                        vulnerabilities.create_vulnerability(multilabelling, pattern, self.function_dict.get_name_value(), self.line_number, argument)
-         
-
         # ver se é sanitizer
         if len(patterns_where_func_is_sanitizer) > 0:
             for pattern in patterns_where_func_is_sanitizer:
@@ -44,6 +35,13 @@ class Call:
                         new_multilabel.add_label(pattern.get_vulnerability(), argument_label)
                         multilabelling.update_Multilabel(argument, new_multilabel)
 
+        ## ver se é sink
+        if len(patterns_where_func_is_sink) > 0:
+            for pattern in patterns_where_func_is_sink:
+                for argument in arguments:
+                     if  multilabelling.get_Multilabel(argument) != None and (multilabelling.get_Multilabel(argument).get_label(pattern.get_vulnerability())) != None:
+                        vulnerabilities.create_vulnerability(multilabelling, pattern, self.function_dict.get_name_value(), self.line_number, argument)
+                        
         # tratar do target
         self.function_dict.eval(policy, multilabelling, vulnerabilities)
         for argument in arguments:
