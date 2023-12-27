@@ -13,7 +13,12 @@ class Assign:
 
         print(repr(self))
         target = self.target.eval(policy, multilabelling, vulnerabilities)
-        arguments = [self.arguments.eval(policy, multilabelling, vulnerabilities)]
+        arguments = []
+        args_eval = self.arguments.eval(policy, multilabelling, vulnerabilities)
+        if isinstance(args_eval, list):
+            arguments.extend(args_eval)
+        else:
+            arguments.append(args_eval)
 
         for argument in arguments:
            multilabelling.update_Multilabel(target, multilabelling.get_Multilabel(argument))
@@ -23,7 +28,7 @@ class Assign:
         if len(patterns_where_target_is_sink) > 0:
             target_multilabel = multilabelling.get_Multilabel(target)
             for pattern in patterns_where_target_is_sink:
-                if (target_multilabel.get_label(pattern.get_vulnerability())) != [] :
+                if target_multilabel.get_label(pattern.get_vulnerability()) != None and target_multilabel.get_label(pattern.get_vulnerability()).get_sources() != []:
                     # significa que temos de adicionar uma vulnerabilidade
                     vulnerabilities.create_vulnerability(multilabelling, pattern, target, self.line_number, target) # funçao tem de ir buscar o label do padrao para cada argumento 
                                                                                                                     #e escrever as vulnerabilidades com target é o sink

@@ -9,5 +9,16 @@ class UnaryOp:
     
     def eval(self, policy, multilabelling, vulnerabilities):
         print(repr(self))
-
-        return self.operand.eval(policy, multilabelling, vulnerabilities)
+        
+        arguments = []
+        operand_result = self.operand.eval(policy, multilabelling, vulnerabilities)
+        
+        if isinstance(operand_result, list):
+            arguments.extend(operand_result)
+        else:
+            arguments.append(operand_result)
+                
+        return arguments
+        
+        
+        
