@@ -1,10 +1,13 @@
 import sys
 import json
+from BoolOp import BoolOp
+from Compare import Compare
 from Pattern import Pattern
 from AST_parser import extract_ast
 from Constant import Constant
 from Policy import Policy
 from MultiLabelling import MultiLabelling
+from UnaryOp import UnaryOp
 from Vulnerability import Vulnerability
 from Assign import Assign
 from Call import Call
@@ -18,13 +21,13 @@ def run_ast_dict(ast_dict):
     elif ast_dict['ast_type'] == "Name":    
         return Name(ast_dict["id"], ast_dict["end_lineno"])
     elif ast_dict['ast_type'] == "BinOp": 
-        return BinOp(run_ast_dict(ast_dict["left"]), ast_dict["op"], run_ast_dict(ast_dict["right"]), ast_dict["end_lineno"])
+        return BinOp(run_ast_dict(ast_dict["left"]), ast_dict["op"]["ast_type"], run_ast_dict(ast_dict["right"]), ast_dict["end_lineno"])
     elif ast_dict['ast_type'] == "UnaryOp":  
-        return
-    elif ast_dict['ast_type'] == "BoolOp":    
-        return
+        return UnaryOp(ast_dict["op"]["ast_type"], run_ast_dict(ast_dict["operand"]), ast_dict["end_lineno"])
+    elif ast_dict['ast_type'] == "BoolOp":
+        return BoolOp(ast_dict["op"]["ast_type"], list(map(lambda n: run_ast_dict(n), ast_dict["values"])), ast_dict["end_lineno"])
     elif ast_dict['ast_type'] == "Compare":     
-        return
+        return Compare(run_ast_dict(ast_dict["left"]), ast_dict["ops"][0]["ast_type"], list(map(lambda n: run_ast_dict(n), ast_dict["comparators"])), ast_dict["end_lineno"])
     elif ast_dict['ast_type'] == "Call":
         function_dict = run_ast_dict(ast_dict["func"])
         arguments_dict = [run_ast_dict(arg) for arg in ast_dict["args"]]

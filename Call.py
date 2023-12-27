@@ -48,7 +48,7 @@ class Call:
         if len(patterns_where_func_is_sink) > 0:
             for pattern in patterns_where_func_is_sink:
                 for argument in arguments:
-                     if  multilabelling.get_Multilabel(argument) != None and (multilabelling.get_Multilabel(argument).get_label(pattern.get_vulnerability())) != None:
+                     if  multilabelling.get_Multilabel(argument) != None and (multilabelling.get_Multilabel(argument).get_label(pattern.get_vulnerability())) != None and multilabelling.get_Multilabel(argument).get_label(pattern.get_vulnerability()).get_sources() != []:
                         vulnerabilities.create_vulnerability(multilabelling, pattern, self.function_dict.get_name_value(), self.line_number, argument)
                         
         # tratar do target
