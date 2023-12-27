@@ -5,6 +5,7 @@ from AST_parser import extract_ast
 from Constant import Constant
 from Policy import Policy
 from MultiLabelling import MultiLabelling
+from UnaryOp import UnaryOp
 from Vulnerability import Vulnerability
 from Assign import Assign
 from Call import Call
@@ -20,7 +21,7 @@ def run_ast_dict(ast_dict):
     elif ast_dict['ast_type'] == "BinOp": 
         return BinOp(run_ast_dict(ast_dict["left"]), ast_dict["op"], run_ast_dict(ast_dict["right"]), ast_dict["end_lineno"])
     elif ast_dict['ast_type'] == "UnaryOp":  
-        return
+        return UnaryOp(ast_dict["op"], run_ast_dict(ast_dict["operand"]), ast_dict["end_lineno"])
     elif ast_dict['ast_type'] == "BoolOp":    
         return
     elif ast_dict['ast_type'] == "Compare":     
