@@ -17,7 +17,7 @@ class Attribute:
     def eval(self, policy, multilabelling, vulnerabilities):
         print(repr(self))
         
-        eval = self.value.eval(policy, multilabelling, vulnerabilities)
+        value_eval = self.value.eval(policy, multilabelling, vulnerabilities)
         
         #check if the left part of the attributte is uninstatiated
         all_patterns = policy.getAllPatterns()
@@ -39,4 +39,4 @@ class Attribute:
 
         multilabelling.update_Multilabel(self.attribute, multiLabel)
         
-        return self.attribute
+        return [value_eval, self.attribute]
