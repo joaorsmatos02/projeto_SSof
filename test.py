@@ -49,6 +49,7 @@ def run_test(input_args):
         output_lines = process.stdout.splitlines()[-1]
 
         output_json_str = output_lines.strip("[]").strip("'")
+        output_json_str = output_json_str.replace("\\\'", "\"")
         output_json_str = output_json_str.replace("vulnerability:", "\"vulnerability\":")
         output_json_str = output_json_str.replace("source:", "\"source\":")
         output_json_str = output_json_str.replace("sink:", "\"sink\":")
@@ -60,7 +61,7 @@ def run_test(input_args):
         pattern = re.compile(r'[^{},]+|{[^}]*}')
         matches = pattern.findall(output_json_str)
         result = [match.strip() for match in matches if match.strip()]
-        cleaned_array = [s for s in result if "'" not in s]        
+        cleaned_array = [s for s in result if s != "'"]        
         return cleaned_array
 
     except Exception as e:
@@ -71,7 +72,6 @@ def run_test(input_args):
 
 def compare_results(expected, actual):
     with open(expected, 'r') as file:
-    # Read a single line from the file
         objective = file.readline()
 
     objective = objective[1:-2]
