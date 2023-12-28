@@ -1,6 +1,7 @@
 class Policy:
     def __init__(self, patterns):
         self.patterns = patterns
+        self.uninstantiated_vars = []
 
     def get_vulnerability_names(self):
         return [pattern.name for pattern in self.patterns]
@@ -15,5 +16,18 @@ class Policy:
         return [pattern for pattern in self.patterns if pattern.is_sink(sink_name)]
 
     def getAllPatterns(self):
-        return self.patterns    
-    # metodo detetar ilegal flows
+        return self.patterns
+    
+    def getAllSourcesOfAllPatterns(self):
+        all_patterns = self.getAllPatterns()
+        sources_list = []
+        for pattern in all_patterns:
+            sources_list.extend(pattern.get_source())
+        return sources_list
+    
+    def getUninstantiatedVars(self):
+        return self.uninstantiated_vars
+    
+    def addUninstantiatedVars(self, var_to_add):
+        self.uninstantiated_vars.append(var_to_add)
+            

@@ -12,7 +12,7 @@ class Attribute:
         return f"Attribute({self.value} , {self.attribute})"
     
     def get_name_value(self):
-        return self.attribute
+        return [self.value.value, self.attribute]
     
     def eval(self, policy, multilabelling, vulnerabilities):
         print(repr(self))
@@ -22,11 +22,12 @@ class Attribute:
         #check if the left part of the attributte is uninstatiated
         all_patterns = policy.getAllPatterns()
         if multilabelling.get_Multilabel(self.value.value) != None and multilabelling.get_Multilabel(self.value.value).get_labels() == {} :
+            policy.addUninstantiatedVars(self.value.value)
             for pattern in all_patterns:
                 new_label = Label()
                 new_label.add_source(self.value.value, self.line_number)
                 multilabelling.get_Multilabel(self.value.value).add_label(pattern.get_vulnerability(), new_label)
-            multilabelling.update_Multilabel(self.attribute,  multilabelling.get_Multilabel(self.value.value))
+            #multilabelling.update_Multilabel(self.attribute,  multilabelling.get_Multilabel(self.value.value))
         
         
         patterns_where_is_source = policy.get_patterns_where_value_is_source(self.attribute)
@@ -39,4 +40,8 @@ class Attribute:
 
         multilabelling.update_Multilabel(self.attribute, multiLabel)
         
-        return [value_eval, self.attribute]
+        if not isinstance(value_eval, list):
+            value_eval = [value_eval]
+        
+        value_eval.append(self.attribute)
+        return value_eval

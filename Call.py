@@ -25,6 +25,7 @@ class Call:
             all_patterns = policy.getAllPatterns()
             for argument in arguments:
                 if multilabelling.get_Multilabel(argument) != None and multilabelling.get_Multilabel(argument).get_labels() == {} :
+                    policy.addUninstantiatedVars(argument)
                     for pattern in all_patterns:
                         new_label = Label()
                         new_label.add_source(argument, self.line_number)
