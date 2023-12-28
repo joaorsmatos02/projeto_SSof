@@ -1,7 +1,9 @@
 class Policy:
     def __init__(self, patterns):
         self.patterns = patterns
-        self.uninstantiated_vars = []
+        self.uninstantiated_vars = {}
+        for pattern in patterns:
+            self.uninstantiated_vars[pattern.get_vulnerability()] = []
 
     def get_vulnerability_names(self):
         return [pattern.name for pattern in self.patterns]
@@ -25,9 +27,9 @@ class Policy:
             sources_list.extend(pattern.get_source())
         return sources_list
     
-    def getUninstantiatedVars(self):
-        return self.uninstantiated_vars
+    def getUninstantiatedVars(self, pattern_name):
+        return self.uninstantiated_vars[pattern_name]
     
-    def addUninstantiatedVars(self, var_to_add):
-        self.uninstantiated_vars.append(var_to_add)
+    def addUninstantiatedVars(self, pattern_name, var_to_add):
+        self.uninstantiated_vars[pattern_name].append(var_to_add)
             

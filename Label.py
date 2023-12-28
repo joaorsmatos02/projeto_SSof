@@ -38,7 +38,7 @@ class Label:
             inside = False
             for i, source1 in enumerate(new_label.sources):
                 if source[0] == source1[0]:
-                    new_label.sources[i] = (source[0], source[1])
+                    new_label.sources[i] = (source[0], max(source[1], source1[1]))
                     inside = True
                     
             if not inside:

@@ -23,10 +23,10 @@ class Call:
                     
                     
             all_patterns = policy.getAllPatterns()
-            for argument in arguments:
-                if multilabelling.get_Multilabel(argument) != None and multilabelling.get_Multilabel(argument).get_labels() == {} :
-                    policy.addUninstantiatedVars(argument)
-                    for pattern in all_patterns:
+            for pattern in all_patterns:
+                for argument in arguments:
+                   if multilabelling.get_Multilabel(argument) != None and multilabelling.get_Multilabel(argument).get_label(pattern.get_vulnerability()) == None :
+                        policy.addUninstantiatedVars(pattern.get_vulnerability(), argument)
                         new_label = Label()
                         new_label.add_source(argument, self.line_number)
                         multilabelling.get_Multilabel(argument).add_label(pattern.get_vulnerability(), new_label)

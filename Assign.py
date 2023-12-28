@@ -24,31 +24,31 @@ class Assign:
 
         all_patterns = policy.getAllPatterns()
         
-        for argument in arguments: 
-            # se algum argumento ainda nao tiver aparecido entao e source
-            if multilabelling.get_Multilabel(argument) != None and multilabelling.get_Multilabel(argument).get_labels() == {} :
-                policy.addUninstantiatedVars(argument)
-                for pattern in all_patterns:
+        for pattern in all_patterns:
+            for argument in arguments: 
+                # se algum argumento ainda nao tiver aparecido entao e source
+                if multilabelling.get_Multilabel(argument) != None and multilabelling.get_Multilabel(argument).get_label(pattern.get_vulnerability()) == None :
+                    policy.addUninstantiatedVars(pattern.get_vulnerability(), argument)
                     new_label = Label()
                     new_label.add_source(argument, self.line_number)
                     multilabelling.get_Multilabel(argument).add_label(pattern.get_vulnerability(), new_label)
-            
-           
-            # objetivo: atualizar a linha das variaveis marcadas como source por nunca terem sido instanciadas
-            for pattern in all_patterns:
-                uninstantiated_vars = policy.getUninstantiatedVars()
-                if (argument in uninstantiated_vars):
-                    if(multilabelling.get_Multilabel(argument) != None and  multilabelling.get_Multilabel(argument).get_label(pattern.get_vulnerability()) != None):
-                        sources_list =  multilabelling.get_Multilabel(argument).get_label(pattern.get_vulnerability()).get_sources()
-                        if lambda argument, x: any((argument, value) in sources_list for value in [x]):
-                            new_updated_line_label = Label()
-                            for source in sources_list:
-                                new_updated_line_label.add_source(source[0], self.line_number)
-                            
-                            updated_multilabel = MultiLabel()
-                            updated_multilabel.add_label(pattern.get_vulnerability(), new_updated_line_label)
-                            combined_multilabels = multilabelling.get_Multilabel(argument).combine_multilabels(updated_multilabel)
-                            multilabelling.assign_Multilabel(argument, combined_multilabels)
+                
+        
+                # objetivo: atualizar a linha das variaveis marcadas como source por nunca terem sido instanciadas
+                for pattern in all_patterns:
+                    uninstantiated_vars = policy.getUninstantiatedVars(pattern.get_vulnerability())
+                    if (argument in uninstantiated_vars):
+                        if(multilabelling.get_Multilabel(argument) != None and  multilabelling.get_Multilabel(argument).get_label(pattern.get_vulnerability()) != None):
+                            sources_list =  multilabelling.get_Multilabel(argument).get_label(pattern.get_vulnerability()).get_sources()
+                            if lambda argument, x: any((argument, value) in sources_list for value in [x]):
+                                new_updated_line_label = Label()
+                                for source in sources_list:
+                                    new_updated_line_label.add_source(source[0], self.line_number)
+                                
+                                updated_multilabel = MultiLabel()
+                                updated_multilabel.add_label(pattern.get_vulnerability(), new_updated_line_label)
+                                combined_multilabels = multilabelling.get_Multilabel(argument).combine_multilabels(updated_multilabel)
+                                multilabelling.assign_Multilabel(argument, combined_multilabels)
                             
                     
 
