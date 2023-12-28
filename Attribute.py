@@ -7,12 +7,21 @@ class Attribute:
         self.value = value
         self.attribute = attribute 
         self.line_number = line_number
+        self.isCallable = False
 
     def __repr__(self):
         return f"Attribute({self.value} , {self.attribute})"
     
     def get_name_value(self):
-        return [self.value.value, self.attribute]
+        name = [self.value.value]
+        if self.isCallable:
+            name.append(self.attribute + "()")
+        else:
+            name.append(self.attribute)
+        return name
+    
+    def is_callable(self):
+        self.isCallable = True
     
     def eval(self, policy, multilabelling, vulnerabilities):
         print(repr(self))
@@ -22,7 +31,8 @@ class Attribute:
         #check if the left part of the attributte is uninstatiated
         all_patterns = policy.getAllPatterns()
         for pattern in all_patterns:
-            if multilabelling.get_Multilabel(self.value.value) != None and multilabelling.get_Multilabel(self.value.value).get_label(pattern.get_vulnerability()) == None :
+            if multilabelling.get_Multilabel(self.value.value) != None and \
+                        multilabelling.get_Multilabel(self.value.value).get_label(pattern.get_vulnerability()) == None:
                 policy.addUninstantiatedVars(pattern.get_vulnerability(), self.value.value)
                 new_label = Label()
                 new_label.add_source(self.value.value, self.line_number)
@@ -43,5 +53,9 @@ class Attribute:
         if not isinstance(value_eval, list):
             value_eval = [value_eval]
         
-        value_eval.append(self.attribute)
+        if self.isCallable:
+            value_eval.append(self.attribute + "()")
+        else:
+            value_eval.append(self.attribute)
+            
         return value_eval

@@ -32,4 +32,10 @@ class Policy:
     
     def addUninstantiatedVars(self, pattern_name, var_to_add):
         self.uninstantiated_vars[pattern_name].append(var_to_add)
+        
+def removeUnwantedChars(array, to_remove):
+    for i in range(len(array)):
+        if isinstance(array[i], str) and to_remove in array[i]:
+                    array[i] = array[i][:-2]
+    return array
             

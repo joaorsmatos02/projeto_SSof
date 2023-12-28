@@ -12,8 +12,8 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": [
-                "slices/3c-expr-attributes.py",
-                "slices/3c-expr-attributes.patterns.json"
+                "slices/6b-sanitization.py",
+                "slices/6b-sanitization.patterns.json"
             ]
         }
     ]

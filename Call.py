@@ -1,5 +1,8 @@
 from Label import Label
 from MultiLabel import MultiLabel
+from Attribute import Attribute
+from Policy import removeUnwantedChars
+
 class Call:
     def __init__(self, function_dict, arguments_dict, line_number):
         self.function_dict = function_dict
@@ -25,14 +28,18 @@ class Call:
             all_patterns = policy.getAllPatterns()
             for pattern in all_patterns:
                 for argument in arguments:
-                   if multilabelling.get_Multilabel(argument) != None and multilabelling.get_Multilabel(argument).get_label(pattern.get_vulnerability()) == None :
+                   if multilabelling.get_Multilabel(argument) != None and \
+                                multilabelling.get_Multilabel(argument).get_label(pattern.get_vulnerability()) == None and \
+                                "()" not in argument:
                         policy.addUninstantiatedVars(pattern.get_vulnerability(), argument)
                         new_label = Label()
                         new_label.add_source(argument, self.line_number)
                         multilabelling.get_Multilabel(argument).add_label(pattern.get_vulnerability(), new_label)
-                
+        
         patterns_where_func_is_sink = policy.get_patterns_where_value_is_sink(self.function_dict.get_name_value())
         patterns_where_func_is_sanitizer = policy.get_patterns_where_value_is_sanitizer(self.function_dict.get_name_value())
+        
+        arguments = removeUnwantedChars(arguments, "()")
         
         # ver se é sanitizer
         if len(patterns_where_func_is_sanitizer) > 0:
@@ -57,4 +64,9 @@ class Call:
         for argument in arguments:
             multilabelling.update_Multilabel(self.function_dict.get_name_value(), multilabelling.get_Multilabel(argument))
 
-        return self.function_dict.get_name_value()
+              
+        if isinstance(self.function_dict, Attribute):
+            self.function_dict.is_callable()
+            return self.function_dict.get_name_value()
+        else:
+            return str(self.function_dict.get_name_value() + "()")
