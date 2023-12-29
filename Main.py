@@ -83,15 +83,23 @@ if __name__ == "__main__":
     
     print(tree)
     
+    
+    multilabelling = MultiLabelling()
+    multilabelling_list = [multilabelling]
     for line in tree:
-        multilabelling = MultiLabelling()
         for value, multilabel in multilabellingMaster.multilabels_mapping.items(): 
             copied_multilabel = copy.deepcopy(multilabel)
             multilabelling.assign_Multilabel(value, copied_multilabel)
+        
 
-        line.eval(policy, multilabelling, vulnerability, multilabellingMaster)
+        for i in range(len(multilabelling_list)):
+            eval_result = line.eval(policy, multilabelling_list[i], vulnerability, multilabellingMaster)
+            
+            if isinstance(line, If):
+                multilabelling_list[i] = eval_result[0]
+                multilabelling_list.insert(i + 1, eval_result[1])
+                i += 1
     
-
     print(vulnerability.get_vulnerabilities_print())
 
 # criar multilabel com os padroes do policy, passamos a policy e combinar labels quando temos dois argumentos, retornando, e no fim da linha atualizar multilabelling

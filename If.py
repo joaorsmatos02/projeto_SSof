@@ -1,3 +1,4 @@
+import copy
 from Label import Label
 from MultiLabel import MultiLabel
 class If:
@@ -12,7 +13,6 @@ class If:
     
     def eval(self, policy, multilabelling, vulnerabilities, multilabellingMaster):
         result = []
-        
         test_eval = self.test.eval(policy, multilabelling, vulnerabilities, multilabellingMaster)
         
         #check if some element in test_eval is an unknown var
@@ -26,14 +26,18 @@ class If:
                     new_label.add_source(test_eval_element, self.line_number)
                     multilabelling.get_Multilabel(test_eval_element).add_label(pattern.get_vulnerability(), new_label)
         
+        if_multilabelling = copy.deepcopy(multilabelling)
+        else_multilabelling = copy.deepcopy(multilabelling)
+        
         if isinstance(test_eval, list):
             result.extend(test_eval)
         else:
             result.append(test_eval)
         
-        result.extend(self.eval_elements(self.body, policy, multilabelling, vulnerabilities, multilabellingMaster))
-        result.extend(self.eval_elements(self.orelse, policy, multilabelling, vulnerabilities, multilabellingMaster))
-        return result
+        result.extend(self.eval_elements(self.body, policy, if_multilabelling, vulnerabilities, multilabellingMaster))
+        result.extend(self.eval_elements(self.orelse, policy, else_multilabelling, vulnerabilities, multilabellingMaster))
+        
+        return [if_multilabelling, else_multilabelling]
 
     def eval_elements(self, elements, policy, multilabelling, vulnerabilities, multilabellingMaster):
         evaluated_results = []
