@@ -27,6 +27,7 @@ class Call:
                     
             all_patterns = policy.getAllPatterns()
             for pattern in all_patterns:
+                 # se algum argumento ainda nao tiver aparecido entao e source
                 for argument in arguments:
                    if multilabelling.get_Multilabel(argument) != None and \
                                 multilabelling.get_Multilabel(argument).get_label(pattern.get_vulnerability()) == None and \
@@ -35,6 +36,25 @@ class Call:
                         new_label = Label()
                         new_label.add_source(argument, self.line_number)
                         multilabelling.get_Multilabel(argument).add_label(pattern.get_vulnerability(), new_label)
+                        
+            for argument in arguments:    
+                # objetivo: atualizar a linha das variaveis marcadas como source por nunca terem sido instanciadas
+                for pattern in all_patterns:
+                    uninstantiated_vars = policy.getUninstantiatedVars(pattern.get_vulnerability())
+                    if (argument in uninstantiated_vars):
+                        if(multilabelling.get_Multilabel(argument) != None and  multilabelling.get_Multilabel(argument).get_label(pattern.get_vulnerability()) != None):
+                            sources_list =  multilabelling.get_Multilabel(argument).get_label(pattern.get_vulnerability()).get_sources()
+                            if lambda argument, x: any((argument, value) in sources_list for value in [x]):
+                                new_updated_line_label = Label()
+                                new_updated_line_label.add_source(argument, self.line_number)
+                                # for source in sources_list:
+                                #     new_updated_line_label.add_source(source[0], self.line_number)
+                                
+                                updated_multilabel = MultiLabel()
+                                updated_multilabel.add_label(pattern.get_vulnerability(), new_updated_line_label)
+                                combined_multilabels = multilabelling.get_Multilabel(argument).combine_multilabels(updated_multilabel)
+                                multilabelling.assign_Multilabel(argument, combined_multilabels)
+                     
         
         patterns_where_func_is_sink = policy.get_patterns_where_value_is_sink(self.function_dict.get_name_value())
         patterns_where_func_is_sanitizer = policy.get_patterns_where_value_is_sanitizer(self.function_dict.get_name_value())

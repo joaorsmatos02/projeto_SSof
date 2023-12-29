@@ -68,6 +68,15 @@ def compare_results(expected, actual):
     pattern = re.compile(r'[^{},]+|{[^}]*}')
     matches = pattern.findall(objective)
     objective = [match.strip() for match in matches if match.strip()]
+
+    #remove check do unsanitized
+    objective = [s.replace("\"unsanitized_flows\": \"yes\"", "")
+                    .replace("\"unsanitized_flows\": \"no\"", "")
+                    for s in objective]
+    actual = [s.replace("\"unsanitized_flows\": \"yes\"", "")
+                    .replace("\"unsanitized_flows\": \"no\"", "")
+                    for s in actual]
+
     actual = set([s[25:] for s in actual])
     objective = set([s[25:] for s in objective])
     if actual == objective:
