@@ -10,7 +10,6 @@ class While:
         return f"While({self.test.__repr__()}, {[elem.__repr__() for elem in self.body]})"
     
     def eval(self, policy, multilabelling, vulnerabilities, multilabellingMaster):
-        result = []
         
         test_eval = self.test.eval(policy, multilabelling, vulnerabilities, multilabellingMaster)
         
@@ -25,23 +24,13 @@ class While:
                     new_label.add_source(test_eval_element, self.line_number)
                     multilabelling.get_Multilabel(test_eval_element).add_label(pattern.get_vulnerability(), new_label)
         
-        if isinstance(test_eval, list):
-            result.extend(test_eval)
-        else:
-            result.append(test_eval)
-        
-        result.extend(self.eval_elements(self.body, policy, multilabelling, vulnerabilities, multilabellingMaster))
-        return result
+        for i in range(len(self.body)):
+            self.eval_elements(self.body, policy, multilabelling, vulnerabilities, multilabellingMaster)
+
+        return
 
     def eval_elements(self, elements, policy, multilabelling, vulnerabilities, multilabellingMaster):
-        evaluated_results = []
         
         for element in elements:
-            element_eval = element.eval(policy, multilabelling, vulnerabilities, multilabellingMaster)
-            
-            if isinstance(element_eval, list):
-                evaluated_results.extend(element_eval)
-            else:
-                evaluated_results.append(element_eval)
-        
-        return evaluated_results
+            element.eval(policy, multilabelling, vulnerabilities, multilabellingMaster)
+        return
