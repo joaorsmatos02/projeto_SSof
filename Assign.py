@@ -77,9 +77,15 @@ class Assign:
             if len(patterns_where_target_is_sink) > 0:
                 target_multilabel = multilabelling.get_Multilabel(target)
                 for pattern in patterns_where_target_is_sink:
-                    if target_multilabel.get_label(pattern.get_vulnerability()) != None and target_multilabel.get_label(pattern.get_vulnerability()).get_sources() != []:
+                    # linhas seguintes 5 sao para unsanitized flow, possivelmente vao sair
+                    for argument in arguments:
+                        labels_sanitized_flows = list()
+                        for argument1 in arguments:
+                            if multilabelling.get_Multilabel(argument1) != None and (multilabelling.get_Multilabel(argument1).get_label(pattern.get_vulnerability())) != None:   
+                                labels_sanitized_flows.append(multilabelling.get_Multilabel(argument1).get_label(pattern.get_vulnerability()))  
+                        if target_multilabel.get_label(pattern.get_vulnerability()) != None and target_multilabel.get_label(pattern.get_vulnerability()).get_sources() != []:
                         # significa que temos de adicionar uma vulnerabilidade
-                        vulnerabilities.create_vulnerability(multilabelling, pattern, target, self.line_number, target) # funçao tem de ir buscar o label do padrao para cada argumento 
+                            vulnerabilities.create_vulnerability(multilabelling, pattern, target, self.line_number, target, labels_sanitized_flows) # funçao tem de ir buscar o label do padrao para cada argumento 
                                                                                                                             #e escrever as vulnerabilidades com target é o sink
 
         args = targets

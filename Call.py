@@ -72,12 +72,20 @@ class Call:
                         new_multilabel.add_label(pattern.get_vulnerability(), argument_label)
                         multilabelling.update_Multilabel(argument, new_multilabel)
 
+           
+
+
         ## ver se é sink
         if len(patterns_where_func_is_sink) > 0:
             for pattern in patterns_where_func_is_sink:
                 for argument in arguments:
-                     if  multilabelling.get_Multilabel(argument) != None and (multilabelling.get_Multilabel(argument).get_label(pattern.get_vulnerability())) != None and multilabelling.get_Multilabel(argument).get_label(pattern.get_vulnerability()).get_sources() != []:
-                        vulnerabilities.create_vulnerability(multilabelling, pattern, self.function_dict.get_name_value(), self.line_number, argument)
+                    # linhas seguintes 4 sao para unsanitized flow, possivelmente vao sair
+                    labels_sanitized_flows = list()
+                    for argument1 in arguments:
+                        if multilabelling.get_Multilabel(argument1) != None and (multilabelling.get_Multilabel(argument1).get_label(pattern.get_vulnerability())) != None:   
+                            labels_sanitized_flows.append(multilabelling.get_Multilabel(argument1).get_label(pattern.get_vulnerability())) 
+                    if  multilabelling.get_Multilabel(argument) != None and (multilabelling.get_Multilabel(argument).get_label(pattern.get_vulnerability())) != None and multilabelling.get_Multilabel(argument).get_label(pattern.get_vulnerability()).get_sources() != []:
+                        vulnerabilities.create_vulnerability(multilabelling, pattern, self.function_dict.get_name_value(), self.line_number, argument, labels_sanitized_flows)
                         
         # tratar do target
         self.function_dict.eval(policy, multilabelling, vulnerabilities, multilabellingMaster)
