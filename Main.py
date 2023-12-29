@@ -17,6 +17,7 @@ from Call import Call
 from Expr import Expr
 from Name import Name
 from BinOp import BinOp
+from While import While
 
 
 def run_ast_dict(ast_dict):
@@ -47,7 +48,7 @@ def run_ast_dict(ast_dict):
     elif ast_dict['ast_type'] == "If":
         return If(run_ast_dict(ast_dict["test"]), list(map(lambda n: run_ast_dict(n), ast_dict["body"])), list(map(lambda n: run_ast_dict(n), ast_dict["orelse"])), ast_dict["end_lineno"])
     elif ast_dict['ast_type'] == "While":         
-        return
+        return While(run_ast_dict(ast_dict["test"]), list(map(lambda n: run_ast_dict(n), ast_dict["body"])), ast_dict["end_lineno"])
     
 
 if __name__ == "__main__":
