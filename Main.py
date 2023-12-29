@@ -1,5 +1,6 @@
 import sys
 import json
+import copy
 from Attribute import Attribute
 from BoolOp import BoolOp
 from Compare import Compare
@@ -15,6 +16,7 @@ from Call import Call
 from Expr import Expr
 from Name import Name
 from BinOp import BinOp
+
 
 def run_ast_dict(ast_dict):
     if ast_dict['ast_type'] == "Constant":
@@ -82,9 +84,11 @@ if __name__ == "__main__":
     for line in tree:
         multilabelling = MultiLabelling()
         for value, multilabel in multilabellingMaster.multilabels_mapping.items(): 
-            multilabelling.assign_Multilabel(value, multilabel)
+            copied_multilabel = copy.deepcopy(multilabel)
+            multilabelling.assign_Multilabel(value, copied_multilabel)
 
         line.eval(policy, multilabelling, vulnerability, multilabellingMaster)
+    
 
     print(vulnerability.get_vulnerabilities_print())
 

@@ -3,7 +3,7 @@ from MultiLabel import MultiLabel
 
 
 class Attribute:
-    def __init__(self, value, attribute, line_number, multilabellingMaster):
+    def __init__(self, value, attribute, line_number):
         self.value = value
         self.attribute = attribute 
         self.line_number = line_number

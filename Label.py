@@ -15,9 +15,9 @@ class Label:
                     inside = True
 
             if not inside:
-                self.sanitizers[len(self.sanitizers) - 1].append((sanitizer_name, line_number))
+                self.sanitizers[len(self.sanitizers) - 1].append([sanitizer_name, line_number])
         else:    
-            self.sanitizers.append([(sanitizer_name, line_number)])
+            self.sanitizers.append([[sanitizer_name, line_number]])
 
 
     # Selectors for components
