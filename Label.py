@@ -8,9 +8,9 @@ class Label:
         self.sources.append((source_name, line_number))
 
     def add_sanitizer(self, sanitizer_name, line_number):
-        if self.sanitizers != []:
+        if self.sanitizers != [] and self.sanitizers[0] != []:
             inside = False
-            for sanitizer in self.sanitizers[len(self.sanitizers) - 1]:
+            for sanitizer in self.sanitizers:
                 if sanitizer[0] == sanitizer_name:
                     inside = True
 
@@ -39,7 +39,7 @@ class Label:
     def combine_labels(self, other_label):
         new_label = Label() 
         new_label.sources = list(self.sources)
-        new_label.sanitizers = list()
+        
         #new_label.sources = self.sources
         
         # quando a source é a mesma de uma ja existente, temos de atualizar a linha 
@@ -52,12 +52,18 @@ class Label:
                     
             if not inside:
                 new_label.sources.append(source)
-       
-        if self.sanitizers != [] and self.sanitizers[0] != []:
 
-            new_label.sanitizers.append(self.sanitizers[0])
-        if other_label.sanitizers != [] and other_label.sanitizers[0] != []:
-            if other_label.sanitizers != self.sanitizers:
-                new_label.sanitizers.append(other_label.sanitizers[0])
+        if self.sanitizers != [] and self.sanitizers[0] != [] and other_label.sanitizers != [] and other_label.sanitizers[0] != []:
+            new_label.sanitizers = list()
+       
+            if self.sanitizers != [] and self.sanitizers[0] != []:
+                new_label.sanitizers.append(self.sanitizers)
+            if other_label.sanitizers != [] and other_label.sanitizers[0] != []:
+                if other_label.sanitizers != self.sanitizers:
+                    new_label.sanitizers.append(other_label.sanitizers)
+        elif  self.sanitizers != [] and self.sanitizers[0] != []:
+            new_label.sanitizers = self.sanitizers     
+        else :
+            new_label.sanitizers = other_label.sanitizers 
 
         return new_label
