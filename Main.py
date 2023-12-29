@@ -96,9 +96,8 @@ if __name__ == "__main__":
             eval_result = line.eval(policy, multilabelling_list[i], vulnerability, multilabellingMaster)
             
             if isinstance(line, If):
-                multilabelling_list[i] = eval_result[0]
-                multilabelling_list.insert(i + 1, eval_result[1])
-                i += 1
+                multilabelling_list[i:i+1] = eval_result
+                i += len(eval_result) - 1
     
     print(vulnerability.get_vulnerabilities_print())
 

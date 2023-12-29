@@ -12,7 +12,6 @@ class If:
         return f"If({self.test.__repr__()}, {[elem.__repr__() for elem in self.body]}, {[elem.__repr__() for elem in self.orelse]})"
     
     def eval(self, policy, multilabelling, vulnerabilities, multilabellingMaster):
-        result = []
         test_eval = self.test.eval(policy, multilabelling, vulnerabilities, multilabellingMaster)
         
         #check if some element in test_eval is an unknown var
@@ -29,25 +28,26 @@ class If:
         if_multilabelling = copy.deepcopy(multilabelling)
         else_multilabelling = copy.deepcopy(multilabelling)
         
-        if isinstance(test_eval, list):
-            result.extend(test_eval)
-        else:
-            result.append(test_eval)
         
-        result.extend(self.eval_elements(self.body, policy, if_multilabelling, vulnerabilities, multilabellingMaster))
-        result.extend(self.eval_elements(self.orelse, policy, else_multilabelling, vulnerabilities, multilabellingMaster))
         
-        return [if_multilabelling, else_multilabelling]
-
-    def eval_elements(self, elements, policy, multilabelling, vulnerabilities, multilabellingMaster):
-        evaluated_results = []
+        multilabelling_list_body_aux = [if_multilabelling]
+        for body_element in self.body:
+            for i in range(len(multilabelling_list_body_aux)):
+                body_eval = body_element.eval(policy, multilabelling_list_body_aux[i], vulnerabilities, multilabellingMaster)
+                
+                if isinstance(body_element, If):
+                    multilabelling_list_body_aux[i:i+1] = body_eval
+                    i += len(body_eval) - 1
         
-        for element in elements:
-            element_eval = element.eval(policy, multilabelling, vulnerabilities, multilabellingMaster)
-            
-            if isinstance(element_eval, list):
-                evaluated_results.extend(element_eval)
-            else:
-                evaluated_results.append(element_eval)
+        multilabelling_list_else_aux = [else_multilabelling]
+        for else_element in self.orelse:
+            for i in range(len(multilabelling_list_else_aux)):
+                else_eval = else_element.eval(policy, multilabelling_list_else_aux[i], vulnerabilities, multilabellingMaster)
+                
+                if isinstance(else_element, If):
+                    multilabelling_list_else_aux[i:i+1] = else_eval
+                    i += len(else_eval) - 1
         
-        return evaluated_results
+        multilabelling_list_body_aux.extend(multilabelling_list_else_aux)
+        
+        return multilabelling_list_body_aux
