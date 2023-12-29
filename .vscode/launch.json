@@ -4,6 +4,7 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        
         {
             "name": "Python: Current File",
             "type": "python",
@@ -12,8 +13,8 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": [
-                "slices/6b-sanitization.py",
-                "slices/6b-sanitization.patterns.json"
+                "slices/4a-conds-branching.py",
+                "slices/4a-conds-branching.patterns.json"
             ]
         }
     ]
