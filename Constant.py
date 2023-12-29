@@ -6,7 +6,7 @@ class Constant:
     def __repr__(self):
         return f"Constant({self.value})"
     
-    def eval(self, policy, multilabelling, vulnerabilities):
+    def eval(self, policy, multilabelling, vulnerabilities, multilabellingMaster):
 
         print(repr(self))
         return self.value

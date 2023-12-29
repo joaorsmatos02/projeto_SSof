@@ -1,14 +1,23 @@
 class Label:
     def __init__(self):
         self.sources = []  # List of tuples (source name, line number)
-        self.sanitizers = []  # List of tuples (sanitizer name, line number)
+        self.sanitizers = [[]]  # List of tuples (sanitizer name, line number)
 
     # Constructors and operations for adding sources and sanitizers
     def add_source(self, source_name, line_number):
         self.sources.append((source_name, line_number))
 
     def add_sanitizer(self, sanitizer_name, line_number):
-     self.sanitizers.append((sanitizer_name, line_number))
+        if self.sanitizers != []:
+            inside = False
+            for sanitizer in self.sanitizers[len(self.sanitizers) - 1]:
+                if sanitizer[0] == sanitizer_name:
+                    inside = True
+
+            if not inside:
+                self.sanitizers[len(self.sanitizers) - 1].append((sanitizer_name, line_number))
+        else:    
+            self.sanitizers.append([(sanitizer_name, line_number)])
 
 
     # Selectors for components
@@ -30,7 +39,7 @@ class Label:
     def combine_labels(self, other_label):
         new_label = Label() 
         new_label.sources = list(self.sources)
-        new_label.sanitizers = list(self.sanitizers)
+        new_label.sanitizers = list()
         #new_label.sources = self.sources
         
         # quando a source é a mesma de uma ja existente, temos de atualizar a linha 
@@ -44,14 +53,11 @@ class Label:
             if not inside:
                 new_label.sources.append(source)
        
-        for sanitizer in other_label.sanitizers:
-            inside = False
-            for i, sanitizer1 in enumerate(new_label.sanitizers):
-                if sanitizer[0] == sanitizer1[0]:
-                    new_label.sanitizers[i] = (sanitizer[0], sanitizer[1])
-                    inside = True
-                    
-            if not inside:
-                new_label.sanitizers.append(sanitizer)
+        if self.sanitizers != [] and self.sanitizers[0] != []:
+
+            new_label.sanitizers.append(self.sanitizers[0])
+        if other_label.sanitizers != [] and other_label.sanitizers[0] != []:
+            if other_label.sanitizers != self.sanitizers:
+                new_label.sanitizers.append(other_label.sanitizers[0])
 
         return new_label

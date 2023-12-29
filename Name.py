@@ -12,7 +12,7 @@ class Name:
     def get_name_value(self):
         return self.value
     
-    def eval(self,  policy, multilabelling, vulnerabilities):
+    def eval(self,  policy, multilabelling, vulnerabilities, multilabellingMaster):
 
         print(repr(self))
 

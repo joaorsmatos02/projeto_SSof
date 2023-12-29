@@ -12,12 +12,12 @@ class Call:
     def __repr__(self):
         return f"Call({self.function_dict} , {self.arguments_dict} )"
     
-    def eval(self,  policy, multilabelling, vulnerabilities):
+    def eval(self,  policy, multilabelling, vulnerabilities, multilabellingMaster):
         print(repr(self))
         arguments = [] 
         if self.arguments_dict != []:
             for argument in self.arguments_dict:
-                argument_eval = argument.eval(policy, multilabelling, vulnerabilities)
+                argument_eval = argument.eval(policy, multilabelling, vulnerabilities, multilabellingMaster)
                 
                 if isinstance(argument_eval, list):
                     arguments.extend(argument_eval)
@@ -60,7 +60,7 @@ class Call:
                         vulnerabilities.create_vulnerability(multilabelling, pattern, self.function_dict.get_name_value(), self.line_number, argument)
                         
         # tratar do target
-        self.function_dict.eval(policy, multilabelling, vulnerabilities)
+        self.function_dict.eval(policy, multilabelling, vulnerabilities, multilabellingMaster)
         for argument in arguments:
             multilabelling.update_Multilabel(self.function_dict.get_name_value(), multilabelling.get_Multilabel(argument))
 

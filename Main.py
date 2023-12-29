@@ -66,7 +66,7 @@ if __name__ == "__main__":
 
     #Policy init
     policy = Policy(pattern_dict)
-    multilabelling = MultiLabelling()
+    multilabellingMaster = MultiLabelling()
     vulnerability = Vulnerability(policy)
 
     ast_dict = extract_ast(slice_content)
@@ -80,7 +80,11 @@ if __name__ == "__main__":
     print(tree)
     
     for line in tree:
-        line.eval(policy, multilabelling, vulnerability)
+        multilabelling = MultiLabelling()
+        for value, multilabel in multilabellingMaster.multilabels_mapping.items(): 
+            multilabelling.assign_Multilabel(value, multilabel)
+
+        line.eval(policy, multilabelling, vulnerability, multilabellingMaster)
 
     print(vulnerability.get_vulnerabilities_print())
 

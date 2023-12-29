@@ -12,12 +12,12 @@ class Assign:
     def __repr__(self):
         return f"Assign(%s, %s)" % (self.target, self.arguments)
     
-    def eval(self, policy, multilabelling, vulnerabilities):
+    def eval(self, policy, multilabelling, vulnerabilities, multilabellingMaster):
 
         print(repr(self))
-        targets = self.target.eval(policy, multilabelling, vulnerabilities)
+        targets = self.target.eval(policy, multilabelling, vulnerabilities, multilabellingMaster)
         arguments = []
-        args_eval = self.arguments.eval(policy, multilabelling, vulnerabilities)
+        args_eval = self.arguments.eval(policy, multilabelling, vulnerabilities, multilabellingMaster)
         if isinstance(args_eval, list):
             arguments.extend(args_eval)
         else:
@@ -69,6 +69,8 @@ class Assign:
         
             for argument in arguments:    
                 multilabelling.update_Multilabel(target, multilabelling.get_Multilabel(argument))
+
+            multilabellingMaster.update_Multilabel(target, multilabelling.get_Multilabel(target))    
 
             patterns_where_target_is_sink = policy.get_patterns_where_value_is_sink(target)
             

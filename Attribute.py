@@ -3,7 +3,7 @@ from MultiLabel import MultiLabel
 
 
 class Attribute:
-    def __init__(self, value, attribute, line_number):
+    def __init__(self, value, attribute, line_number, multilabellingMaster):
         self.value = value
         self.attribute = attribute 
         self.line_number = line_number
@@ -23,10 +23,10 @@ class Attribute:
     def is_callable(self):
         self.isCallable = True
     
-    def eval(self, policy, multilabelling, vulnerabilities):
+    def eval(self, policy, multilabelling, vulnerabilities, multilabellingMaster):
         print(repr(self))
         
-        value_eval = self.value.eval(policy, multilabelling, vulnerabilities)
+        value_eval = self.value.eval(policy, multilabelling, vulnerabilities, multilabellingMaster)
         
         #check if the left part of the attributte is uninstatiated
         all_patterns = policy.getAllPatterns()
