@@ -82,4 +82,9 @@ class Assign:
                         vulnerabilities.create_vulnerability(multilabelling, pattern, target, self.line_number, target) # funçao tem de ir buscar o label do padrao para cada argumento 
                                                                                                                             #e escrever as vulnerabilidades com target é o sink
 
-        return
+        args = targets
+        if isinstance(args_eval, list):
+            args.extend(args_eval)
+        else:
+            args.append(args_eval)
+        return args

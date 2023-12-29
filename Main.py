@@ -4,6 +4,7 @@ import copy
 from Attribute import Attribute
 from BoolOp import BoolOp
 from Compare import Compare
+from If import If
 from Pattern import Pattern
 from AST_parser import extract_ast
 from Constant import Constant
@@ -44,7 +45,7 @@ def run_ast_dict(ast_dict):
         values_dict = run_ast_dict(ast_dict["value"])
         return Assign(target, values_dict, ast_dict["end_lineno"])
     elif ast_dict['ast_type'] == "If":
-        return
+        return If(run_ast_dict(ast_dict["test"]), list(map(lambda n: run_ast_dict(n), ast_dict["body"])), list(map(lambda n: run_ast_dict(n), ast_dict["orelse"])), ast_dict["end_lineno"])
     elif ast_dict['ast_type'] == "While":         
         return
     
