@@ -71,6 +71,7 @@ class Call:
                         new_multilabel = MultiLabel()
                         new_multilabel.add_label(pattern.get_vulnerability(), argument_label)
                         multilabelling.update_Multilabel(argument, new_multilabel)
+                        multilabellingMaster.update_Multilabel(argument, new_multilabel)
 
            
 

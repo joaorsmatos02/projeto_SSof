@@ -46,7 +46,7 @@ def run_ast_dict(ast_dict):
         values_dict = run_ast_dict(ast_dict["value"])
         return Assign(target, values_dict, ast_dict["end_lineno"])
     elif ast_dict['ast_type'] == "If":
-        return If(run_ast_dict(ast_dict["test"]), list(map(lambda n: run_ast_dict(n), ast_dict["body"])), list(map(lambda n: run_ast_dict(n), ast_dict["orelse"])), ast_dict["end_lineno"])
+        return If(run_ast_dict(ast_dict["test"]), list(map(lambda n: run_ast_dict(n), ast_dict["body"])), list(map(lambda n: run_ast_dict(n), ast_dict["orelse"])), ast_dict["lineno"])
     elif ast_dict['ast_type'] == "While":         
         return While(run_ast_dict(ast_dict["test"]), list(map(lambda n: run_ast_dict(n), ast_dict["body"])), ast_dict["end_lineno"])
     
