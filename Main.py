@@ -97,18 +97,27 @@ if __name__ == "__main__":
     multilabelling = MultiLabelling()
     multilabelling_list = [multilabelling]
     multilabelling_assigned_list = [multilabellingAssigned]
+    notLists = True
     for line in tree:
-        for value, multilabel in multilabellingAssigned.multilabels_mapping.items(): 
-            copied_multilabel = copy.deepcopy(multilabel)
-            multilabelling.assign_Multilabel(value, copied_multilabel)
-
         for i in range(len(multilabelling_list)):
-            eval_result = line.eval(policy, multilabelling_list[i], vulnerability, multilabelling_assigned_list[i])
+            if notLists:
+                multilabelling = MultiLabelling()
+                multilabelling_list = [multilabelling]
+                multilabelling_assigned_list = [multilabellingAssigned]
+                
+                for value, multilabel in multilabellingAssigned.multilabels_mapping.items(): 
+                    copied_multilabel = copy.deepcopy(multilabel)
+                    multilabelling.assign_Multilabel(value, copied_multilabel)
+                
+                eval_result = line.eval(policy, multilabelling_list[i], vulnerability, multilabelling_assigned_list[i])
+            else:
+                eval_result = line.eval(policy, multilabelling_list[i], vulnerability, multilabelling_assigned_list[i])
             
             if isinstance(line, If) or isinstance(line, While):
                 multilabelling_list[i:i+1] = eval_result[0]
                 multilabelling_assigned_list[i:i+1] = eval_result[1]
                 i += len(eval_result) - 1
+                notLists = False
     
     print(vulnerability.get_vulnerabilities_print())
 

@@ -70,7 +70,7 @@ class Assign:
         
             for argument in arguments:    
                 multilabelling.update_Multilabel(target, multilabelling.get_Multilabel(argument), policy, multilabellingAssigned)
-
+                
             multilabellingAssigned.update_Multilabel(target, multilabelling.get_Multilabel(target), policy, multilabellingAssigned)    
 
             patterns_where_target_is_sink = policy.get_patterns_where_value_is_sink(target)
