@@ -46,7 +46,7 @@ class Label:
         for other_source in other_label.sources:
             inside = False
             for i, self_source in enumerate(new_label.sources):
-                if other_source == self_source:
+                if other_source[0] == self_source[0]:
                 #and multilabellingAssigned.get_Multilabel(other_source[0]) == None:
                     new_label.sources[i] = (other_source[0], max(other_source[1], self_source[1]))
                     inside = True
