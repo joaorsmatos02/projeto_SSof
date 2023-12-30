@@ -35,7 +35,7 @@ class Call:
                         policy.addUninstantiatedVars(pattern.get_vulnerability(), argument)
                         new_label = Label()
                         new_label.add_source(argument, self.line_number)
-                        multilabelling.get_Multilabel(argument).add_label(pattern.get_vulnerability(), new_label)
+                        multilabelling.get_Multilabel(argument).add_label(pattern.get_vulnerability(), new_label, policy, multilabellingMaster)
                         
             for argument in arguments:    
                 # objetivo: atualizar a linha das variaveis marcadas como source por nunca terem sido instanciadas
@@ -51,8 +51,8 @@ class Call:
                                 #     new_updated_line_label.add_source(source[0], self.line_number)
                                 
                                 updated_multilabel = MultiLabel()
-                                updated_multilabel.add_label(pattern.get_vulnerability(), new_updated_line_label)
-                                combined_multilabels = multilabelling.get_Multilabel(argument).combine_multilabels(updated_multilabel)
+                                updated_multilabel.add_label(pattern.get_vulnerability(), new_updated_line_label, policy, multilabellingMaster)
+                                combined_multilabels = multilabelling.get_Multilabel(argument).combine_multilabels(updated_multilabel, policy, multilabellingMaster)
                                 multilabelling.assign_Multilabel(argument, combined_multilabels)
                      
         
@@ -69,11 +69,12 @@ class Call:
                         argument_label = multilabelling.get_Multilabel(argument).get_label(pattern.get_vulnerability())
                         argument_label.add_sanitizer(self.function_dict.get_name_value(), self.line_number)
                         new_multilabel = MultiLabel()
-                        new_multilabel.add_label(pattern.get_vulnerability(), argument_label)
-                        multilabelling.update_Multilabel(argument, new_multilabel)
-                        multilabellingMaster.update_Multilabel(argument, new_multilabel)
-
-           
+                        new_multilabel.add_label(pattern.get_vulnerability(), argument_label, policy, multilabellingMaster)
+                        multilabelling.update_Multilabel(argument, new_multilabel, policy, multilabellingMaster)
+                    
+                    #caso houvesse necessidade de fazer sanitize de vars novas
+                    # if argument in uninstantiated_vars:
+                    #     uninstantiated_vars.remove(argument)
 
 
         ## ver se é sink
@@ -91,7 +92,7 @@ class Call:
         # tratar do target
         self.function_dict.eval(policy, multilabelling, vulnerabilities, multilabellingMaster)
         for argument in arguments:
-            multilabelling.update_Multilabel(self.function_dict.get_name_value(), multilabelling.get_Multilabel(argument))
+            multilabelling.update_Multilabel(self.function_dict.get_name_value(), multilabelling.get_Multilabel(argument), policy, multilabellingMaster)
 
               
         if isinstance(self.function_dict, Attribute):

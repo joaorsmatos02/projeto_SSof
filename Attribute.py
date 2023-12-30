@@ -36,7 +36,7 @@ class Attribute:
                 policy.addUninstantiatedVars(pattern.get_vulnerability(), self.value.value)
                 new_label = Label()
                 new_label.add_source(self.value.value, self.line_number)
-                multilabelling.get_Multilabel(self.value.value).add_label(pattern.get_vulnerability(), new_label)
+                multilabelling.get_Multilabel(self.value.value).add_label(pattern.get_vulnerability(), new_label, policy, multilabellingMaster)
                 #multilabelling.update_Multilabel(self.attribute,  multilabelling.get_Multilabel(self.value.value))
         
         
@@ -46,9 +46,9 @@ class Attribute:
         for pattern in patterns_where_is_source:
             label = Label()
             label.add_source(self.attribute, self.line_number)
-            multiLabel.add_label(pattern.get_vulnerability(), label)
+            multiLabel.add_label(pattern.get_vulnerability(), label, policy, multilabellingMaster)
 
-        multilabelling.update_Multilabel(self.attribute, multiLabel)
+        multilabelling.update_Multilabel(self.attribute, multiLabel, policy, multilabellingMaster)
         
         if not isinstance(value_eval, list):
             value_eval = [value_eval]

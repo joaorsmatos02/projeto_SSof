@@ -1,6 +1,7 @@
 import copy
 from Label import Label
 from MultiLabel import MultiLabel
+from Policy import Policy
 class If:
     def __init__(self, test, body, orelse, line_number):
         self.test = test
@@ -23,7 +24,7 @@ class If:
                     policy.addUninstantiatedVars(pattern.get_vulnerability(), test_eval_element)
                     new_label = Label()
                     new_label.add_source(test_eval_element, self.line_number)
-                    multilabelling.get_Multilabel(test_eval_element).add_label(pattern.get_vulnerability(), new_label)
+                    multilabelling.get_Multilabel(test_eval_element).add_label(pattern.get_vulnerability(), new_label, policy, multilabellingMaster)
         
         if_multilabelling = copy.deepcopy(multilabelling)
         else_multilabelling = copy.deepcopy(multilabelling)
