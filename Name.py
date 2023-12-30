@@ -22,8 +22,10 @@ class Name:
         for pattern in patterns_where_is_source:
             label = Label()
             label.add_source(self.value, self.line_number)
-            multiLabel.add_label(pattern.get_vulnerability(), label)
-
-        multilabelling.update_Multilabel(self.value, multiLabel)
+            multiLabel.add_label(pattern.get_vulnerability(), label, policy, multilabellingMaster)
+            
+        
+        
+        multilabelling.update_Multilabel(self.value, multiLabel, policy, multilabellingMaster)
 
         return self.value

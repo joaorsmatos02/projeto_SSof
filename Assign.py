@@ -3,6 +3,7 @@ from Label import Label
 from MultiLabel import MultiLabel
 import Pattern
 from Policy import removeUnwantedChars
+from Policy import Policy
 class Assign:
     def __init__(self, target, arguments_dict, line_number):
         self.target = target
@@ -34,7 +35,7 @@ class Assign:
                     policy.addUninstantiatedVars(pattern.get_vulnerability(), argument)
                     new_label = Label()
                     new_label.add_source(argument, self.line_number)
-                    multilabelling.get_Multilabel(argument).add_label(pattern.get_vulnerability(), new_label)
+                    multilabelling.get_Multilabel(argument).add_label(pattern.get_vulnerability(), new_label, policy, multilabellingMaster)
                 
         arguments = removeUnwantedChars(arguments, "()")
             
@@ -51,8 +52,8 @@ class Assign:
                                 new_updated_line_label.add_source(source[0], self.line_number)
                             
                             updated_multilabel = MultiLabel()
-                            updated_multilabel.add_label(pattern.get_vulnerability(), new_updated_line_label)
-                            combined_multilabels = multilabelling.get_Multilabel(argument).combine_multilabels(updated_multilabel)
+                            updated_multilabel.add_label(pattern.get_vulnerability(), new_updated_line_label, policy, multilabellingMaster)
+                            combined_multilabels = multilabelling.get_Multilabel(argument).combine_multilabels(updated_multilabel, policy, multilabellingMaster)
                             multilabelling.assign_Multilabel(argument, combined_multilabels)
                             
                     
@@ -65,12 +66,12 @@ class Assign:
             if multilabelling.get_Multilabel(target) != None and multilabelling.get_Multilabel(target).get_labels() == {}:
                 for pattern in all_patterns:
                     new_label = Label()
-                    multilabelling.get_Multilabel(target).add_label(pattern.get_vulnerability(), new_label)
+                    multilabelling.get_Multilabel(target).add_label(pattern.get_vulnerability(), new_label, policy, multilabellingMaster)
         
             for argument in arguments:    
-                multilabelling.update_Multilabel(target, multilabelling.get_Multilabel(argument))
+                multilabelling.update_Multilabel(target, multilabelling.get_Multilabel(argument), policy, multilabellingMaster)
 
-            multilabellingMaster.update_Multilabel(target, multilabelling.get_Multilabel(target))    
+            multilabellingMaster.update_Multilabel(target, multilabelling.get_Multilabel(target), policy, multilabellingMaster)    
 
             patterns_where_target_is_sink = policy.get_patterns_where_value_is_sink(target)
             

@@ -20,6 +20,12 @@ class Policy:
     def getAllPatterns(self):
         return self.patterns
     
+    def getSourcesFromPattern(self, pattern_name):
+        all_patterns = self.getAllPatterns()
+        for pattern in all_patterns:
+            if pattern_name == pattern.get_vulnerability():
+                return pattern.get_source()
+    
     def getAllSourcesOfAllPatterns(self):
         all_patterns = self.getAllPatterns()
         sources_list = []
