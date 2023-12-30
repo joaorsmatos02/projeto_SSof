@@ -22,30 +22,41 @@ from If_While import *
 def run_ast_dict(ast_dict):
     if ast_dict['ast_type'] == "Constant":
         return Constant(ast_dict["value"], ast_dict["lineno"])
+    
     elif ast_dict['ast_type'] == "Name":    
         return Name(ast_dict["id"], ast_dict["lineno"])
+    
     elif ast_dict['ast_type'] == "BinOp": 
         return BinOp(run_ast_dict(ast_dict["left"]), ast_dict["op"]["ast_type"], run_ast_dict(ast_dict["right"]), ast_dict["lineno"])
+    
     elif ast_dict['ast_type'] == "UnaryOp":  
         return UnaryOp(ast_dict["op"]["ast_type"], run_ast_dict(ast_dict["operand"]), ast_dict["lineno"])
+    
     elif ast_dict['ast_type'] == "BoolOp":
         return BoolOp(ast_dict["op"]["ast_type"], list(map(lambda n: run_ast_dict(n), ast_dict["values"])), ast_dict["lineno"])
+    
     elif ast_dict['ast_type'] == "Compare":     
         return Compare(run_ast_dict(ast_dict["left"]), ast_dict["ops"][0]["ast_type"], list(map(lambda n: run_ast_dict(n), ast_dict["comparators"])), ast_dict["lineno"])
+    
     elif ast_dict['ast_type'] == "Call":
         function_dict = run_ast_dict(ast_dict["func"])
         arguments_dict = [run_ast_dict(arg) for arg in ast_dict["args"]]
         return Call(function_dict, arguments_dict, ast_dict["lineno"])
+    
     elif ast_dict['ast_type'] == "Attribute":
         return Attribute(run_ast_dict(ast_dict["value"]), ast_dict['attr'], ast_dict["lineno"])
+    
     elif ast_dict['ast_type'] == "Expr":
         return Expr(run_ast_dict(ast_dict["value"]), ast_dict["lineno"])
+    
     elif ast_dict['ast_type'] == "Assign":  
         target = run_ast_dict(ast_dict["targets"][0])
         values_dict = run_ast_dict(ast_dict["value"])
         return Assign(target, values_dict, ast_dict["lineno"])
+   
     elif ast_dict['ast_type'] == "If":
         return If(run_ast_dict(ast_dict["test"]), list(map(lambda n: run_ast_dict(n), ast_dict["body"])), list(map(lambda n: run_ast_dict(n), ast_dict["orelse"])), ast_dict["lineno"])
+    
     elif ast_dict['ast_type'] == "While":         
         return While(run_ast_dict(ast_dict["test"]), list(map(lambda n: run_ast_dict(n), ast_dict["body"])), ast_dict["lineno"])
     
@@ -69,7 +80,7 @@ if __name__ == "__main__":
 
     #Policy init
     policy = Policy(pattern_dict)
-    multilabellingMaster = MultiLabelling()
+    multilabellingAssigned = MultiLabelling()
     vulnerability = Vulnerability(policy)
 
     ast_dict = extract_ast(slice_content)
@@ -85,16 +96,18 @@ if __name__ == "__main__":
     
     multilabelling = MultiLabelling()
     multilabelling_list = [multilabelling]
+    multilabelling_assigned_list = [multilabellingAssigned]
     for line in tree:
-        for value, multilabel in multilabellingMaster.multilabels_mapping.items(): 
+        for value, multilabel in multilabellingAssigned.multilabels_mapping.items(): 
             copied_multilabel = copy.deepcopy(multilabel)
             multilabelling.assign_Multilabel(value, copied_multilabel)
 
         for i in range(len(multilabelling_list)):
-            eval_result = line.eval(policy, multilabelling_list[i], vulnerability, multilabellingMaster)
+            eval_result = line.eval(policy, multilabelling_list[i], vulnerability, multilabelling_assigned_list[i])
             
             if isinstance(line, If) or isinstance(line, While):
-                multilabelling_list[i:i+1] = eval_result
+                multilabelling_list[i:i+1] = eval_result[0]
+                multilabelling_assigned_list[i:i+1] = eval_result[1]
                 i += len(eval_result) - 1
     
     print(vulnerability.get_vulnerabilities_print())

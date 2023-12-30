@@ -23,10 +23,10 @@ class Attribute:
     def is_callable(self):
         self.isCallable = True
     
-    def eval(self, policy, multilabelling, vulnerabilities, multilabellingMaster):
+    def eval(self, policy, multilabelling, vulnerabilities, multilabellingAssigned):
         print(repr(self))
         
-        value_eval = self.value.eval(policy, multilabelling, vulnerabilities, multilabellingMaster)
+        value_eval = self.value.eval(policy, multilabelling, vulnerabilities, multilabellingAssigned)
         
         #check if the left part of the attributte is uninstatiated
         all_patterns = policy.getAllPatterns()
@@ -36,7 +36,7 @@ class Attribute:
                 policy.addUninstantiatedVars(pattern.get_vulnerability(), self.value.value)
                 new_label = Label()
                 new_label.add_source(self.value.value, self.line_number)
-                multilabelling.get_Multilabel(self.value.value).add_label(pattern.get_vulnerability(), new_label, policy, multilabellingMaster)
+                multilabelling.get_Multilabel(self.value.value).add_label(pattern.get_vulnerability(), new_label, policy, multilabellingAssigned)
                 #multilabelling.update_Multilabel(self.attribute,  multilabelling.get_Multilabel(self.value.value))
         
         
@@ -46,9 +46,9 @@ class Attribute:
         for pattern in patterns_where_is_source:
             label = Label()
             label.add_source(self.attribute, self.line_number)
-            multiLabel.add_label(pattern.get_vulnerability(), label, policy, multilabellingMaster)
+            multiLabel.add_label(pattern.get_vulnerability(), label, policy, multilabellingAssigned)
 
-        multilabelling.update_Multilabel(self.attribute, multiLabel, policy, multilabellingMaster)
+        multilabelling.update_Multilabel(self.attribute, multiLabel, policy, multilabellingAssigned)
         
         if not isinstance(value_eval, list):
             value_eval = [value_eval]

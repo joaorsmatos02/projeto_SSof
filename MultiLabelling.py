@@ -15,10 +15,10 @@ class MultiLabelling:
         return None
 
 
-    def update_Multilabel(self, variable_name, multi_label, policy, multilabellingMaster):
+    def update_Multilabel(self, variable_name, multi_label, policy, multilabellingAssigned):
         if variable_name in self.multilabels_mapping:
             current_multilabel = self.multilabels_mapping[variable_name]
-            updated_multilabel = current_multilabel.combine_multilabels(multi_label, policy, multilabellingMaster)
+            updated_multilabel = current_multilabel.combine_multilabels(multi_label, policy, multilabellingAssigned)
             self.multilabels_mapping[variable_name] = updated_multilabel
         else:
             # If the variable name doesn't exist, assign the new MultiLabel

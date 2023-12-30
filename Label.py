@@ -37,25 +37,22 @@ class Label:
         return matching_sources
 
     # Combinor for combining two labels
-    def combine_labels(self, other_label, policy, pattern_name, multilabellingMaster):
+    def combine_labels(self, other_label, policy, pattern_name, multilabellingAssigned):
         new_label = Label() 
         new_label.sources = list(self.sources)
         new_label.sanitizers = self.sanitizers
         
-        #new_label.sources = self.sources
-        
         # quando a source é a mesma de uma ja existente, temos de atualizar a linha 
-        for source in other_label.sources:
+        for other_source in other_label.sources:
             inside = False
-            for i, source1 in enumerate(new_label.sources):
-                #para não esquecer: não dá porque a é source, apesar de não ser var nova
-                #if source[0] == source1[0] and source[0] in policy.uninstantiated_vars[pattern_name]:
-                if source[0] == source1[0]:
-                    new_label.sources[i] = (source[0], max(source[1], source1[1]))
+            for i, self_source in enumerate(new_label.sources):
+                if other_source[0] == self_source[0]:
+                #and multilabellingAssigned.get_Multilabel(other_source[0]) == None:
+                    new_label.sources[i] = (other_source[0], max(other_source[1], self_source[1]))
                     inside = True
                     
             if not inside:
-                new_label.sources.append(source)
+                new_label.sources.append(other_source)
 
         if other_label.sanitizers != []: 
             for other_san in other_label.sanitizers:

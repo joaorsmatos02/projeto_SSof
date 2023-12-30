@@ -12,8 +12,8 @@ class If:
     def __repr__(self):
         return f"If({self.test.__repr__()}, {[elem.__repr__() for elem in self.body]}, {[elem.__repr__() for elem in self.orelse]})"
     
-    def eval(self, policy, multilabelling, vulnerabilities, multilabellingMaster):
-        test_eval = self.test.eval(policy, multilabelling, vulnerabilities, multilabellingMaster)
+    def eval(self, policy, multilabelling, vulnerabilities, multilabellingAssigned):
+        test_eval = self.test.eval(policy, multilabelling, vulnerabilities, multilabellingAssigned)
         
         #check if some element in test_eval is an unknown var
         all_patterns = policy.getAllPatterns()
@@ -24,35 +24,41 @@ class If:
                     policy.addUninstantiatedVars(pattern.get_vulnerability(), test_eval_element)
                     new_label = Label()
                     new_label.add_source(test_eval_element, self.line_number)
-                    multilabelling.get_Multilabel(test_eval_element).add_label(pattern.get_vulnerability(), new_label, policy, multilabellingMaster)
+                    multilabelling.get_Multilabel(test_eval_element).add_label(pattern.get_vulnerability(), new_label, policy, multilabellingAssigned)
         
         if_multilabelling = copy.deepcopy(multilabelling)
         else_multilabelling = copy.deepcopy(multilabelling)
-        
-        
+        if_multilabelling_assigned = copy.deepcopy(multilabellingAssigned)
+        else_multilabelling_assigned = copy.deepcopy(multilabellingAssigned)
         
         multilabelling_list_body_aux = [if_multilabelling]
+        multilabelling_assigned_list_body_aux = [if_multilabelling_assigned]
         for body_element in self.body:
             for i in range(len(multilabelling_list_body_aux)):
-                body_eval = body_element.eval(policy, multilabelling_list_body_aux[i], vulnerabilities, multilabellingMaster)
+                body_eval = body_element.eval(policy, multilabelling_list_body_aux[i], vulnerabilities, multilabelling_assigned_list_body_aux[i])
                 
                 if isinstance(body_element, If) or isinstance(body_element, While):
-                    multilabelling_list_body_aux[i:i+1] = body_eval
+                    multilabelling_list_body_aux[i:i+1] = body_eval[0]
+                    multilabelling_assigned_list_body_aux[i:i+1] = body_eval[1]
                     i += len(body_eval) - 1
         
         multilabelling_list_else_aux = [else_multilabelling]
+        multilabelling_assigned_list_else_aux = [else_multilabelling_assigned]
         for else_element in self.orelse:
             for i in range(len(multilabelling_list_else_aux)):
-                else_eval = else_element.eval(policy, multilabelling_list_else_aux[i], vulnerabilities, multilabellingMaster)
+                else_eval = else_element.eval(policy, multilabelling_list_else_aux[i], vulnerabilities, multilabelling_assigned_list_else_aux[i])
                 
                 if isinstance(else_element, If) or isinstance(else_element, While):
-                    multilabelling_list_else_aux[i:i+1] = else_eval
+                    multilabelling_list_else_aux[i:i+1] = else_eval[0]
+                    multilabelling_assigned_list_else_aux = else_eval[1]
                     i += len(else_eval) - 1
         
         multilabelling_list_body_aux.extend(multilabelling_list_else_aux)
+        multilabelling_assigned_list_body_aux.extend(multilabelling_assigned_list_else_aux)
         
-        return multilabelling_list_body_aux
-    
+        return [multilabelling_list_body_aux, multilabelling_assigned_list_body_aux]
+
+
 class While:
     def __init__(self, test, body, line_number):
         self.test = test
@@ -62,9 +68,9 @@ class While:
     def __repr__(self):
         return f"While({self.test.__repr__()}, {[elem.__repr__() for elem in self.body]})"
     
-    def eval(self, policy, multilabelling, vulnerabilities, multilabellingMaster):
+    def eval(self, policy, multilabelling, vulnerabilities, multilabellingAssigned):
         
-        test_eval = self.test.eval(policy, multilabelling, vulnerabilities, multilabellingMaster)
+        test_eval = self.test.eval(policy, multilabelling, vulnerabilities, multilabellingAssigned)
         
         #check if some element in test_eval is an unknown var
         all_patterns = policy.getAllPatterns()
@@ -75,15 +81,25 @@ class While:
                     policy.addUninstantiatedVars(pattern.get_vulnerability(), test_eval_element)
                     new_label = Label()
                     new_label.add_source(test_eval_element, self.line_number)
-                    multilabelling.get_Multilabel(test_eval_element).add_label(pattern.get_vulnerability(), new_label, policy, multilabellingMaster)
-        
-        for i in range(len(self.body)):
-            self.eval_elements(self.body, policy, multilabelling, vulnerabilities, multilabellingMaster)
+                    multilabelling.get_Multilabel(test_eval_element).add_label(pattern.get_vulnerability(), new_label, policy, multilabellingAssigned)
 
-        return
-
-    def eval_elements(self, elements, policy, multilabelling, vulnerabilities, multilabellingMaster):
+        while_multilabellings = [copy.deepcopy(multilabelling)]
+        while_multilabellings_assigned = [copy.deepcopy(multilabellingAssigned)]
         
-        for element in elements:
-            element.eval(policy, multilabelling, vulnerabilities, multilabellingMaster)
-        return
+        for a in range(len(self.body)): # while é simulado a correr a vezes
+            for element in self.body: # cada linha
+                for i in range(len(while_multilabellings)): # é simulada em cada fluxo de execução
+                    eval_result = element.eval(policy, while_multilabellings[i], vulnerabilities, multilabellingAssigned)
+                    
+                    if isinstance(element, If) or isinstance(element, While):
+                        while_multilabellings[i:i+1] = eval_result[0]
+                        while_multilabellings_assigned[i:i+1] = eval_result[1]
+                        i += len(eval_result) - 1
+
+        result = [multilabelling]
+        result.extend(while_multilabellings)
+        
+        result_assigned = [multilabellingAssigned]
+        result_assigned.extend(while_multilabellings_assigned)
+
+        return [result, result_assigned]
