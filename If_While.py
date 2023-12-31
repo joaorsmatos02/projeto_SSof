@@ -2,6 +2,7 @@ import copy
 from Label import Label
 from MultiLabel import MultiLabel
 from Policy import Policy
+from MultiLabelling import MultiLabelling
 class If:
     def __init__(self, test, body, orelse, line_number):
         self.test = test
@@ -85,21 +86,33 @@ class While:
 
         while_multilabellings = [copy.deepcopy(multilabelling)]
         while_multilabellings_assigned = [copy.deepcopy(multilabellingAssigned)]
-        
+        notLists = True
         for a in range(len(self.body)): # while é simulado a correr a vezes
+        #for a in range(1):
             for element in self.body: # cada linha
                 for i in range(len(while_multilabellings)): # é simulada em cada fluxo de execução
-                    eval_result = element.eval(policy, while_multilabellings[i], vulnerabilities, multilabellingAssigned)
+                    if notLists:
+                        multilabelling = MultiLabelling()
+                        while_multilabellings = [multilabelling]
+                        while_multilabellings_assigned = [multilabellingAssigned]
+                        
+                        for value, multilabel in multilabellingAssigned.multilabels_mapping.items(): 
+                            copied_multilabel = copy.deepcopy(multilabel)
+                            multilabelling.assign_Multilabel(value, copied_multilabel)
+                        
+                        eval_result = element.eval(policy, while_multilabellings[i], vulnerabilities, while_multilabellings_assigned[i])
+                    else:
+                        eval_result = element.eval(policy, while_multilabellings[i], vulnerabilities, while_multilabellings_assigned[i])
                     
                     if isinstance(element, If) or isinstance(element, While):
-                        while_multilabellings[i:i+1] = eval_result[0]
+                        #while_multilabellings[i:i+1] = eval_result[0]
                         while_multilabellings_assigned[i:i+1] = eval_result[1]
+                        while_multilabellings = copy.deepcopy(while_multilabellings_assigned)
                         i += len(eval_result) - 1
-
-        result = [multilabelling]
-        result.extend(while_multilabellings)
+                        notLists = False
+                        
         
         result_assigned = [multilabellingAssigned]
         result_assigned.extend(while_multilabellings_assigned)
 
-        return [result, result_assigned]
+        return [[], result_assigned]

@@ -114,8 +114,9 @@ if __name__ == "__main__":
                 eval_result = line.eval(policy, multilabelling_list[i], vulnerability, multilabelling_assigned_list[i])
             
             if isinstance(line, If) or isinstance(line, While):
-                multilabelling_list[i:i+1] = eval_result[0]
+                #multilabelling_list[i:i+1] = eval_result[0]
                 multilabelling_assigned_list[i:i+1] = eval_result[1]
+                multilabelling_list = copy.deepcopy(multilabelling_assigned_list)
                 i += len(eval_result) - 1
                 notLists = False
     

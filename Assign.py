@@ -72,7 +72,11 @@ class Assign:
                 multilabelling.update_Multilabel(target, multilabelling.get_Multilabel(argument), policy, multilabellingAssigned)
                 
             multilabellingAssigned.update_Multilabel(target, multilabelling.get_Multilabel(target), policy, multilabellingAssigned)    
-
+            
+            for key, value in policy.uninstantiated_vars.items():
+                if target in value:
+                    policy.uninstantiated_vars[key].remove(target)
+            
             patterns_where_target_is_sink = policy.get_patterns_where_value_is_sink(target)
             
             if len(patterns_where_target_is_sink) > 0:
