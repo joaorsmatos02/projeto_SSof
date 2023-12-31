@@ -7,16 +7,17 @@ class Label:
     # Constructors and operations for adding sources and sanitizers
     def add_source(self, source_name, line_number):
         self.sources.append((source_name, line_number))
-
+    
+    #[[["s", 8]]]
     def add_sanitizer(self, sanitizer_name, line_number):
-        if self.sanitizers != [] and self.sanitizers[0] != []:
+        if self.sanitizers != []:
             inside = False
             for sanitizer in self.sanitizers:
-                if sanitizer[0] == sanitizer_name:
+                if sanitizer[0] == [sanitizer_name, line_number]:
                     inside = True
 
             if not inside:
-                self.sanitizers[len(self.sanitizers) - 1].append([sanitizer_name, line_number])
+                self.sanitizers[0].append([sanitizer_name, line_number])
         else:    
             self.sanitizers.append([[sanitizer_name, line_number]])
 
