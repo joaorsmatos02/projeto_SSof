@@ -42,15 +42,29 @@ class Label:
         new_label.sources = list(self.sources)
         new_label.sanitizers = self.sanitizers
         
-        # quando a source é a mesma de uma ja existente, temos de atualizar a linha 
+        # quando a source é a mesma de uma ja existente, temos de atualizar a linha         
         for other_source in other_label.sources:
             inside = False
             for i, self_source in enumerate(new_label.sources):
+                # if other_source[0] == self_source[0] and \
+                #             multilabellingAssigned.get_Multilabel(other_source[0]) != None and \
+                #             multilabellingAssigned.get_Multilabel(other_source[0]).get_label(pattern_name) != None and \
+                #             len(multilabellingAssigned.get_Multilabel(other_source[0]).get_label(pattern_name).get_sanitizers()) == 0 and \
+                #             other_source[0] not in policy.getSourcesFromPattern(pattern_name):
+                
                 if other_source[0] == self_source[0]:
-                #and multilabellingAssigned.get_Multilabel(other_source[0]) == None:
-                    new_label.sources[i] = (other_source[0], max(other_source[1], self_source[1]))
-                    inside = True
+                    if  multilabellingAssigned.get_Multilabel(other_source[0]) != None and \
+                                other_source[0] in policy.getSourcesFromPattern(pattern_name) and \
+                                multilabellingAssigned.get_Multilabel(other_source[0]).get_label(pattern_name) != None and \
+                                len(multilabellingAssigned.get_Multilabel(other_source[0]).get_label(pattern_name).get_sanitizers()) == 0:
+                        #and multilabellingAssigned.get_Multilabel(other_source[0]) == None:
+                        new_label.sources[i] = (other_source[0], max(other_source[1], self_source[1]))
+                        inside = True
                     
+                    elif other_source[0] in policy.getUninstantiatedVars(pattern_name):
+                        new_label.sources[i] = (other_source[0], max(other_source[1], self_source[1]))
+                        inside = True
+                
             if not inside:
                 new_label.sources.append(other_source)
 
