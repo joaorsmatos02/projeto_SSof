@@ -60,7 +60,10 @@ class Assign:
 
         if isinstance(targets, str):
             targets = [targets] 
-      
+
+        
+
+
         for target in targets:
             # criação de label sem source apenas para marcar a var como conhecida, para o caso de ser passada a um call
             if multilabelling.get_Multilabel(target) != None and multilabelling.get_Multilabel(target).get_labels() == {}:
@@ -73,9 +76,7 @@ class Assign:
                 
             multilabellingAssigned.update_Multilabel(target, multilabelling.get_Multilabel(target), policy, multilabellingAssigned)    
             
-            for key, value in policy.uninstantiated_vars.items():
-                if target in value:
-                    policy.uninstantiated_vars[key].remove(target)
+
             
             patterns_where_target_is_sink = policy.get_patterns_where_value_is_sink(target)
             
@@ -92,6 +93,15 @@ class Assign:
                         # significa que temos de adicionar uma vulnerabilidade
                             vulnerabilities.create_vulnerability(multilabelling, pattern, target, self.line_number, target, labels_sanitized_flows) # funçao tem de ir buscar o label do padrao para cada argumento 
                                                                                                                             #e escrever as vulnerabilidades com target é o sink
+
+        if len(targets) > 1:
+            for key, value in policy.uninstantiated_vars.items():
+                if targets[1] in value:
+                    policy.uninstantiated_vars[key].remove(target[1])  
+        else:
+            for key, value in policy.uninstantiated_vars.items():
+                if targets[0] in value:
+                    policy.uninstantiated_vars[key].remove(target[0]) 
 
         args = targets
         if isinstance(args_eval, list):
