@@ -1,4 +1,5 @@
 import copy
+from Constant import Constant
 from Label import Label
 from MultiLabel import MultiLabel
 from Policy import Policy
@@ -70,19 +71,19 @@ class While:
         return f"While({self.test.__repr__()}, {[elem.__repr__() for elem in self.body]})"
     
     def eval(self, policy, multilabelling, vulnerabilities, multilabellingAssigned):
-        
-        test_eval = self.test.eval(policy, multilabelling, vulnerabilities, multilabellingAssigned)
-        
-        #check if some element in test_eval is an unknown var
-        all_patterns = policy.getAllPatterns()
-        for pattern in all_patterns:
-            for test_eval_element in test_eval:
-                if multilabelling.get_Multilabel(test_eval_element) != None and \
-                            multilabelling.get_Multilabel(test_eval_element).get_label(pattern.get_vulnerability()) == None:
-                    policy.addUninstantiatedVars(pattern.get_vulnerability(), test_eval_element)
-                    new_label = Label()
-                    new_label.add_source(test_eval_element, self.line_number)
-                    multilabelling.get_Multilabel(test_eval_element).add_label(pattern.get_vulnerability(), new_label, policy, multilabellingAssigned)
+        if not isinstance(self.test, Constant):
+            test_eval = self.test.eval(policy, multilabelling, vulnerabilities, multilabellingAssigned)
+            
+            #check if some element in test_eval is an unknown var
+            all_patterns = policy.getAllPatterns()
+            for pattern in all_patterns:
+                for test_eval_element in test_eval:
+                    if multilabelling.get_Multilabel(test_eval_element) != None and \
+                                multilabelling.get_Multilabel(test_eval_element).get_label(pattern.get_vulnerability()) == None:
+                        policy.addUninstantiatedVars(pattern.get_vulnerability(), test_eval_element)
+                        new_label = Label()
+                        new_label.add_source(test_eval_element, self.line_number)
+                        multilabelling.get_Multilabel(test_eval_element).add_label(pattern.get_vulnerability(), new_label, policy, multilabellingAssigned)
 
         while_multilabellings = [copy.deepcopy(multilabelling)]
         while_multilabellings_assigned = [copy.deepcopy(multilabellingAssigned)]
