@@ -104,8 +104,5 @@ class Assign:
                     policy.uninstantiated_vars[key].remove(target[0]) 
 
         args = targets
-        if isinstance(args_eval, list):
-            args.extend(args_eval)
-        else:
-            args.append(args_eval)
+
         return args

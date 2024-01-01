@@ -16,6 +16,9 @@ class Policy:
 
     def get_patterns_where_value_is_sink(self, sink_name):
         return [pattern for pattern in self.patterns if pattern.is_sink(sink_name)]
+    
+    def get_patterns_implicit(self):
+        return [pattern for pattern in self.patterns if pattern.is_implicit()]
 
     def getAllPatterns(self):
         return self.patterns

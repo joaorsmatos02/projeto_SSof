@@ -13,8 +13,8 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": [
-                "slices/5c-loops-unfolding.py",
-                "slices/5c-loops-unfolding.patterns.json"
+                "slices/7-conds-implicit.py",
+                "slices/7-conds-implicit.patterns.json"
             ]
         }
     ]

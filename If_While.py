@@ -4,6 +4,7 @@ from Label import Label
 from MultiLabel import MultiLabel
 from Policy import Policy
 from MultiLabelling import MultiLabelling
+from Compare import Compare
 class If:
     def __init__(self, test, body, orelse, line_number):
         self.test = test
@@ -40,6 +41,18 @@ class If:
             for i in range(len(multilabelling_list_body_aux)):
                 body_eval = body_element.eval(policy, multilabelling_list_body_aux[i], vulnerabilities, multilabelling_assigned_list_body_aux[i])
                 
+                if isinstance(self.test, Compare):
+                    for pattern in policy.get_patterns_implicit(): 
+                        if "()" not in body_eval[0]:
+                            for value_in_condition in test_eval:
+                                if if_multilabelling.get_Multilabel(value_in_condition) != None and if_multilabelling.get_Multilabel(value_in_condition).get_label(pattern.get_vulnerability()) != None:
+                                    label_value = copy.deepcopy(if_multilabelling.get_Multilabel(value_in_condition).get_label(pattern.get_vulnerability()))
+                                    body_label = copy.deepcopy(if_multilabelling.get_Multilabel(body_eval[0]).get_label(pattern.get_vulnerability()).combine_labels(label_value, policy, pattern.get_vulnerability(), if_multilabelling_assigned))
+                                    body_multilabel = MultiLabel()
+                                    body_multilabel.add_label(pattern.get_vulnerability(), body_label, policy, if_multilabelling_assigned)
+                                    if_multilabelling_assigned.update_Multilabel(body_eval[0], body_multilabel, policy, if_multilabelling_assigned)
+                                
+
                 if isinstance(body_element, If) or isinstance(body_element, While):
                     multilabelling_list_body_aux[i:i+1] = body_eval[0]
                     multilabelling_assigned_list_body_aux[i:i+1] = body_eval[1]

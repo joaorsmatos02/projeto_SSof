@@ -31,3 +31,7 @@ class Pattern:
 
     def is_sink(self, name):
         return name in self.sinks
+    
+    def is_implicit(self):
+        if self.implicit == "yes":
+            return self.vulnerability
