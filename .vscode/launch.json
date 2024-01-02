@@ -13,8 +13,8 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": [
-                "slices/7-conds-implicit.py",
-                "slices/7-conds-implicit.patterns.json"
+                "slices/8-loops-implicit.py",
+                "slices/8-loops-implicit.patterns.json"
             ]
         }
     ]

@@ -46,8 +46,8 @@ class If:
                         if "()" not in body_eval[0]:
                             for value_in_condition in test_eval:
                                 if if_multilabelling.get_Multilabel(value_in_condition) != None and if_multilabelling.get_Multilabel(value_in_condition).get_label(pattern.get_vulnerability()) != None:
-                                    label_value = copy.deepcopy(if_multilabelling.get_Multilabel(value_in_condition).get_label(pattern.get_vulnerability()))
-                                    body_label = copy.deepcopy(if_multilabelling.get_Multilabel(body_eval[0]).get_label(pattern.get_vulnerability()).combine_labels(label_value, policy, pattern.get_vulnerability(), if_multilabelling_assigned))
+                                    value_in_condition_label = copy.deepcopy(if_multilabelling.get_Multilabel(value_in_condition).get_label(pattern.get_vulnerability()))
+                                    body_label = copy.deepcopy(if_multilabelling.get_Multilabel(body_eval[0]).get_label(pattern.get_vulnerability()).combine_labels(value_in_condition_label, policy, pattern.get_vulnerability(), if_multilabelling_assigned))
                                     body_multilabel = MultiLabel()
                                     body_multilabel.add_label(pattern.get_vulnerability(), body_label, policy, if_multilabelling_assigned)
                                     if_multilabelling_assigned.update_Multilabel(body_eval[0], body_multilabel, policy, if_multilabelling_assigned)
@@ -102,12 +102,23 @@ class While:
         while_multilabellings = [copy.deepcopy(multilabelling)]
         while_multilabellings_assigned = [copy.deepcopy(multilabellingAssigned)]
         notLists = True
+        auxBool = True
         for a in range(len(self.body)): # while é simulado a correr a vezes
         #for a in range(1):
             for element in self.body: # cada linha
                 for i in range(len(while_multilabellings)): # é simulada em cada fluxo de execução
                     if notLists:
-                        multilabelling = MultiLabelling()
+                        if not isinstance(self.test, Constant):
+                            for test_eval_element in test_eval:
+                               if multilabelling.get_Multilabel(test_eval_element) == None:
+                                   auxBool = False
+                                       
+                        if auxBool:
+                            for value, multilabel in while_multilabellings[0].multilabels_mapping.items(): 
+                                copied_multilabel = copy.deepcopy(multilabel)
+                                multilabelling.assign_Multilabel(value, copied_multilabel)    
+                        else:
+                            multilabelling = MultiLabelling()
                         while_multilabellings = [multilabelling]
                         while_multilabellings_assigned = [multilabellingAssigned]
                         
@@ -116,6 +127,17 @@ class While:
                             multilabelling.assign_Multilabel(value, copied_multilabel)
                         
                         eval_result = element.eval(policy, while_multilabellings[i], vulnerabilities, while_multilabellings_assigned[i])
+                        if isinstance(self.test, Compare):
+                            for pattern in policy.get_patterns_implicit(): 
+                                if "()" not in eval_result[0]:
+                                    for value_in_condition in test_eval:
+                                        if multilabelling.get_Multilabel(value_in_condition) != None and multilabelling.get_Multilabel(value_in_condition).get_label(pattern.get_vulnerability()) != None:
+                                            value_in_condition_label = copy.deepcopy(multilabelling.get_Multilabel(value_in_condition).get_label(pattern.get_vulnerability()))
+                                            body_label = copy.deepcopy(multilabelling.get_Multilabel(eval_result[0]).get_label(pattern.get_vulnerability()).combine_labels(value_in_condition_label, policy, pattern.get_vulnerability(), multilabellingAssigned))
+                                            body_multilabel = MultiLabel()
+                                            body_multilabel.add_label(pattern.get_vulnerability(), body_label, policy, multilabellingAssigned)
+                                            multilabellingAssigned.update_Multilabel(eval_result[0], body_multilabel, policy, multilabellingAssigned)
+                       
                     else:
                         eval_result = element.eval(policy, while_multilabellings[i], vulnerabilities, while_multilabellings_assigned[i])
                     
