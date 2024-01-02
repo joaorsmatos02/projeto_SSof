@@ -40,7 +40,7 @@ class If:
         for body_element in self.body:
             for i in range(len(multilabelling_list_body_aux)):
 
-                implicit_multilabel = MultiLabelling()
+                
                 for pattern in policy.get_patterns_implicit():
                     for value_in_condition in test_eval:
                         if if_multilabelling.get_Multilabel(value_in_condition) != None and if_multilabelling.get_Multilabel(value_in_condition).get_label(pattern.get_vulnerability()) != None: 
@@ -137,7 +137,6 @@ class While:
                             copied_multilabel = copy.deepcopy(multilabel)
                             multilabelling.assign_Multilabel(value, copied_multilabel)
 
-                        implicit_multilabel = MultiLabelling()
                         for pattern in policy.get_patterns_implicit():
                             for value_in_condition in test_eval:
                                 if multilabelling.get_Multilabel(value_in_condition) != None and multilabelling.get_Multilabel(value_in_condition).get_label(pattern.get_vulnerability()) != None: 
@@ -147,7 +146,7 @@ class While:
                                     implicit_multilabel.update_Multilabel(value_in_condition, value_multilabel, policy, multilabellingAssigned)
 
                         eval_result = element.eval(policy, while_multilabellings[i], vulnerabilities, while_multilabellings_assigned[i], implicit_multilabel)
-                        if isinstance(self.test, Compare):
+                        if isinstance(self.test, Compare) and not isinstance(element, If):
                             for pattern in policy.get_patterns_implicit(): 
                                 if "()" not in eval_result[0]:
                                     for value_in_condition in test_eval:
@@ -159,13 +158,13 @@ class While:
                                             multilabellingAssigned.update_Multilabel(eval_result[0], body_multilabel, policy, multilabellingAssigned)
                        
                     else:
-                        implicit_multilabel = MultiLabelling()
+                        
                         for pattern in policy.get_patterns_implicit():
                             for value_in_condition in test_eval:
                                 if multilabelling.get_Multilabel(value_in_condition) != None and multilabelling.get_Multilabel(value_in_condition).get_label(pattern.get_vulnerability()) != None: 
                                     value_in_condition_label = copy.deepcopy(multilabelling.get_Multilabel(value_in_condition).get_label(pattern.get_vulnerability()))
                                     value_multilabel = MultiLabel()
-                                    value_multilabel.add_label(pattern.get_vulnerability(), value_in_condition, policy, multilabellingAssigned)
+                                    value_multilabel.add_label(pattern.get_vulnerability(), value_in_condition_label, policy, multilabellingAssigned)
                                     implicit_multilabel.update_Multilabel(value_in_condition, value_multilabel, policy, multilabellingAssigned)
                         eval_result = element.eval(policy, while_multilabellings[i], vulnerabilities, while_multilabellings_assigned[i], implicit_multilabel)
                     
