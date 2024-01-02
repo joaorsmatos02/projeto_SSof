@@ -144,8 +144,11 @@ class While:
                                     value_multilabel = MultiLabel()
                                     value_multilabel.add_label(pattern.get_vulnerability(), value_in_condition_label, policy, multilabellingAssigned)
                                     implicit_multilabel.update_Multilabel(value_in_condition, value_multilabel, policy, multilabellingAssigned)
-
-                        eval_result = element.eval(policy, while_multilabellings[i], vulnerabilities, while_multilabellings_assigned[i], implicit_multilabel)
+                        
+                        if(isinstance(element, If)):
+                            eval_result = element.eval(policy, while_multilabellings[i], vulnerabilities, while_multilabellings_assigned[i], copy.deepcopy(implicit_multilabel))
+                        else:
+                            eval_result = element.eval(policy, while_multilabellings[i], vulnerabilities, while_multilabellings_assigned[i], implicit_multilabel)
                         if isinstance(self.test, Compare) and not isinstance(element, If):
                             for pattern in policy.get_patterns_implicit(): 
                                 if "()" not in eval_result[0]:
@@ -167,7 +170,7 @@ class While:
                                     value_multilabel.add_label(pattern.get_vulnerability(), value_in_condition_label, policy, multilabellingAssigned)
                                     implicit_multilabel.update_Multilabel(value_in_condition, value_multilabel, policy, multilabellingAssigned)
                         
-                        eval_result = element.eval(policy, while_multilabellings[i], vulnerabilities, while_multilabellings_assigned[i], copy.deepcopy(implicit_multilabel))
+                        eval_result = element.eval(policy, while_multilabellings[i], vulnerabilities, while_multilabellings_assigned[i], implicit_multilabel)
                     
                     if isinstance(element, If) or isinstance(element, While):
                         #while_multilabellings[i:i+1] = eval_result[0]
@@ -176,7 +179,7 @@ class While:
                         i += len(eval_result) - 1
                         notLists = False
                         
-        
+
         result_assigned = [multilabellingAssigned]
         result_assigned.extend(while_multilabellings_assigned)
 
