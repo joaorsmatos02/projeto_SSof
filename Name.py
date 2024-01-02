@@ -12,7 +12,7 @@ class Name:
     def get_name_value(self):
         return self.value
     
-    def eval(self,  policy, multilabelling, vulnerabilities, multilabellingAssigned):
+    def eval(self,  policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel):
 
         print(repr(self))
 
@@ -27,5 +27,8 @@ class Name:
         
         
         multilabelling.update_Multilabel(self.value, multiLabel, policy, multilabellingAssigned)
+        if implicit_multilabel.multilabels_mapping != {}:
+            for key, value in implicit_multilabel.multilabels_mapping.items():
+                multilabelling.update_Multilabel(self.value, value, policy, multilabellingAssigned)
 
         return self.value

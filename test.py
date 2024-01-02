@@ -77,8 +77,8 @@ def compare_results(expected, actual):
                     .replace("\"unsanitized_flows\": \"no\"", "")
                     for s in actual]
 
-    actual = set([s[25:] for s in actual])
-    objective = set([s[25:] for s in objective])
+    actual = set([s.split('source', 1)[1] if 'source' in s else s for s in actual])
+    objective = set([s.split('source', 1)[1] if 'source' in s else s for s in objective])
     if actual == objective:
         print("test passed")
         return True

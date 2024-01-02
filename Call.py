@@ -12,12 +12,12 @@ class Call:
     def __repr__(self):
         return f"Call({self.function_dict} , {self.arguments_dict} )"
     
-    def eval(self,  policy, multilabelling, vulnerabilities, multilabellingAssigned):
+    def eval(self,  policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel):
         print(repr(self))
         arguments = [] 
         if self.arguments_dict != []:
             for argument in self.arguments_dict:
-                argument_eval = argument.eval(policy, multilabelling, vulnerabilities, multilabellingAssigned)
+                argument_eval = argument.eval(policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel)
                 
                 if isinstance(argument_eval, list):
                     arguments.extend(argument_eval)
@@ -76,7 +76,15 @@ class Call:
                     # if argument in uninstantiated_vars:
                     #     uninstantiated_vars.remove(argument)
 
+        if implicit_multilabel.multilabels_mapping != {}:
+            for key, value in implicit_multilabel.multilabels_mapping.items():
+                multilabelling.update_Multilabel(self.function_dict.get_name_value(), value, policy, multilabellingAssigned)    
 
+
+        if len(patterns_where_func_is_sink) > 0:
+            for pattern in patterns_where_func_is_sink:
+                if  multilabelling.get_Multilabel(self.function_dict.get_name_value()) != None and (multilabelling.get_Multilabel(self.function_dict.get_name_value()).get_label(pattern.get_vulnerability())) != None and multilabelling.get_Multilabel(self.function_dict.get_name_value()).get_label(pattern.get_vulnerability()).get_sources() != []:
+                    vulnerabilities.create_vulnerability(multilabelling, pattern, self.function_dict.get_name_value(), self.line_number, self.function_dict.get_name_value(), [])
         ## ver se é sink
         if len(patterns_where_func_is_sink) > 0:
             for pattern in patterns_where_func_is_sink:
@@ -89,8 +97,12 @@ class Call:
                     if  multilabelling.get_Multilabel(argument) != None and (multilabelling.get_Multilabel(argument).get_label(pattern.get_vulnerability())) != None and multilabelling.get_Multilabel(argument).get_label(pattern.get_vulnerability()).get_sources() != []:
                         vulnerabilities.create_vulnerability(multilabelling, pattern, self.function_dict.get_name_value(), self.line_number, argument, labels_sanitized_flows)
                         
+
         # tratar do target
-        self.function_dict.eval(policy, multilabelling, vulnerabilities, multilabellingAssigned)
+    
+
+        
+        self.function_dict.eval(policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel)
         for argument in arguments:
             multilabelling.update_Multilabel(self.function_dict.get_name_value(), multilabelling.get_Multilabel(argument), policy, multilabellingAssigned)
 

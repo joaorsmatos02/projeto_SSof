@@ -13,12 +13,12 @@ class Assign:
     def __repr__(self):
         return f"Assign(%s, %s)" % (self.target, self.arguments)
     
-    def eval(self, policy, multilabelling, vulnerabilities, multilabellingAssigned):
+    def eval(self, policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel):
 
         print(repr(self))
-        targets = self.target.eval(policy, multilabelling, vulnerabilities, multilabellingAssigned)
+        targets = self.target.eval(policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel)
         arguments = []
-        args_eval = self.arguments.eval(policy, multilabelling, vulnerabilities, multilabellingAssigned)
+        args_eval = self.arguments.eval(policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel)
         if isinstance(args_eval, list):
             arguments.extend(args_eval)
         else:

@@ -109,9 +109,9 @@ if __name__ == "__main__":
                     copied_multilabel = copy.deepcopy(multilabel)
                     multilabelling.assign_Multilabel(value, copied_multilabel)
                 
-                eval_result = line.eval(policy, multilabelling_list[i], vulnerability, multilabelling_assigned_list[i])
+                eval_result = line.eval(policy, multilabelling_list[i], vulnerability, multilabelling_assigned_list[i], MultiLabelling())
             else:
-                eval_result = line.eval(policy, multilabelling_list[i], vulnerability, multilabelling_assigned_list[i])
+                eval_result = line.eval(policy, multilabelling_list[i], vulnerability, multilabelling_assigned_list[i], MultiLabelling())
             
             if isinstance(line, If) or isinstance(line, While):
                 #multilabelling_list[i:i+1] = eval_result[0]

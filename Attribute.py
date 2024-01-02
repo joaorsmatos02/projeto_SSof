@@ -23,10 +23,10 @@ class Attribute:
     def is_callable(self):
         self.isCallable = True
     
-    def eval(self, policy, multilabelling, vulnerabilities, multilabellingAssigned):
+    def eval(self, policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel):
         print(repr(self))
         
-        value_eval = self.value.eval(policy, multilabelling, vulnerabilities, multilabellingAssigned)
+        value_eval = self.value.eval(policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel)
         
         #check if the left part of the attributte is uninstatiated
         all_patterns = policy.getAllPatterns()
