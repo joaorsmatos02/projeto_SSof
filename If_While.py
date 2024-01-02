@@ -166,7 +166,8 @@ class While:
                                     value_multilabel = MultiLabel()
                                     value_multilabel.add_label(pattern.get_vulnerability(), value_in_condition_label, policy, multilabellingAssigned)
                                     implicit_multilabel.update_Multilabel(value_in_condition, value_multilabel, policy, multilabellingAssigned)
-                        eval_result = element.eval(policy, while_multilabellings[i], vulnerabilities, while_multilabellings_assigned[i], implicit_multilabel)
+                        
+                        eval_result = element.eval(policy, while_multilabellings[i], vulnerabilities, while_multilabellings_assigned[i], copy.deepcopy(implicit_multilabel))
                     
                     if isinstance(element, If) or isinstance(element, While):
                         #while_multilabellings[i:i+1] = eval_result[0]
