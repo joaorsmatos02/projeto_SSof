@@ -7,6 +7,4 @@ class Constant:
         return f"Constant({self.value})"
     
     def eval(self, policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel):
-
-        print(repr(self))
         return self.value

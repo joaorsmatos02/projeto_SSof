@@ -13,7 +13,6 @@ class Call:
         return f"Call({self.function_dict} , {self.arguments_dict} )"
     
     def eval(self,  policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel):
-        print(repr(self))
         arguments = [] 
         if self.arguments_dict != []:
             for argument in self.arguments_dict:

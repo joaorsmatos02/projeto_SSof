@@ -12,7 +12,6 @@ class BinOp:
     
     def eval(self, policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel):
         arguments = []
-        print(repr(self))
         
         left_result = self.left.eval(policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel)
         

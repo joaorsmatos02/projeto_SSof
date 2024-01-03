@@ -24,7 +24,6 @@ class Attribute:
         self.isCallable = True
     
     def eval(self, policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel):
-        print(repr(self))
         
         value_eval = self.value.eval(policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel)
         

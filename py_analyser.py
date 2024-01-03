@@ -93,16 +93,11 @@ if __name__ == "__main__":
     multilabellingAssigned = MultiLabelling()
     vulnerability = Vulnerability(policy)
 
-    ast_dict = extract_ast(slice_content)
-    print(json.dumps(ast_dict, indent=4))
-    
+    ast_dict = extract_ast(slice_content)    
     ast_dict_body = ast_dict.get('body', [])
     tree = []
     for node in ast_dict_body :
-        tree.append(run_ast_dict(node))
-    
-    print(tree)
-    
+        tree.append(run_ast_dict(node))    
     
     multilabelling = MultiLabelling()
     multilabelling_list = [multilabelling]
@@ -140,5 +135,3 @@ if __name__ == "__main__":
     with open("output\\" + filename + ".output.json", 'w') as json_file:
         json.dump(output, json_file)
                 
-    #print(vulnerability.get_vulnerabilities_dict())
-

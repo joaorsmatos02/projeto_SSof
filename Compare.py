@@ -8,9 +8,7 @@ class Compare:
     def __repr__(self):
         return f"Compare({self.left} , {self.ops}, {self.comparators} )"
     
-    def eval(self, policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel):
-        print(repr(self))
-        
+    def eval(self, policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel):        
         arguments = [self.left.eval(policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel)]
         for value in self.comparators:
             arguments.append(value.eval(policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel))

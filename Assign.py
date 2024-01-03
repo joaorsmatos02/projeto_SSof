@@ -15,7 +15,6 @@ class Assign:
     
     def eval(self, policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel):
 
-        print(repr(self))
         targets = self.target.eval(policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel)
         arguments = []
         args_eval = self.arguments.eval(policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel)

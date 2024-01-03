@@ -13,9 +13,6 @@ class Name:
         return self.value
     
     def eval(self,  policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel):
-
-        print(repr(self))
-
         patterns_where_is_source = policy.get_patterns_where_value_is_source(self.value)
         multiLabel = MultiLabel()
 
