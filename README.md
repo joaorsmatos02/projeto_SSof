@@ -39,6 +39,10 @@ python ./py_analyser.py <path_to_slice>\<slice>.py .<path_to_slice>\<slice>.patt
 ```
 It will output as requested.
 
+## `test.py`
+
+A simple test script was created in order to check progress during development. It can be executed with the command `python test.py` and will test the `py_analyser` program with all the provided slices, comparing the output json with the correct version provided.
+
 ## Contributors
  - **Diogo Pereira**    - 110996
  - **João Santos**      - 110947
