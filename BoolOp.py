@@ -7,12 +7,10 @@ class BoolOp:
     def __repr__(self):
         return f"BoolOp({self.op}, {self.values})"
     
-    def eval(self, policy, multilabelling, vulnerabilities):
-        print(repr(self))
-        
+    def eval(self, policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel):        
         arguments = []
         for value in self.values:
-            arguments.append(value.eval(policy, multilabelling, vulnerabilities))
+            arguments.append(value.eval(policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel))
         
         return arguments
         

@@ -3,6 +3,7 @@ from Label import Label
 from MultiLabel import MultiLabel
 import Pattern
 from Policy import removeUnwantedChars
+from Policy import Policy
 class Assign:
     def __init__(self, target, arguments_dict, line_number):
         self.target = target
@@ -12,12 +13,11 @@ class Assign:
     def __repr__(self):
         return f"Assign(%s, %s)" % (self.target, self.arguments)
     
-    def eval(self, policy, multilabelling, vulnerabilities):
+    def eval(self, policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel):
 
-        print(repr(self))
-        targets = self.target.eval(policy, multilabelling, vulnerabilities)
+        targets = self.target.eval(policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel)
         arguments = []
-        args_eval = self.arguments.eval(policy, multilabelling, vulnerabilities)
+        args_eval = self.arguments.eval(policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel)
         if isinstance(args_eval, list):
             arguments.extend(args_eval)
         else:
@@ -34,7 +34,7 @@ class Assign:
                     policy.addUninstantiatedVars(pattern.get_vulnerability(), argument)
                     new_label = Label()
                     new_label.add_source(argument, self.line_number)
-                    multilabelling.get_Multilabel(argument).add_label(pattern.get_vulnerability(), new_label)
+                    multilabelling.get_Multilabel(argument).add_label(pattern.get_vulnerability(), new_label, policy, multilabellingAssigned)
                 
         arguments = removeUnwantedChars(arguments, "()")
             
@@ -51,33 +51,57 @@ class Assign:
                                 new_updated_line_label.add_source(source[0], self.line_number)
                             
                             updated_multilabel = MultiLabel()
-                            updated_multilabel.add_label(pattern.get_vulnerability(), new_updated_line_label)
-                            combined_multilabels = multilabelling.get_Multilabel(argument).combine_multilabels(updated_multilabel)
+                            updated_multilabel.add_label(pattern.get_vulnerability(), new_updated_line_label, policy, multilabellingAssigned)
+                            combined_multilabels = multilabelling.get_Multilabel(argument).combine_multilabels(updated_multilabel, policy, multilabellingAssigned)
                             multilabelling.assign_Multilabel(argument, combined_multilabels)
                             
                     
 
         if isinstance(targets, str):
             targets = [targets] 
-      
+
+        
+
+
         for target in targets:
             # criação de label sem source apenas para marcar a var como conhecida, para o caso de ser passada a um call
             if multilabelling.get_Multilabel(target) != None and multilabelling.get_Multilabel(target).get_labels() == {}:
                 for pattern in all_patterns:
                     new_label = Label()
-                    multilabelling.get_Multilabel(target).add_label(pattern.get_vulnerability(), new_label)
+                    multilabelling.get_Multilabel(target).add_label(pattern.get_vulnerability(), new_label, policy, multilabellingAssigned)
         
             for argument in arguments:    
-                multilabelling.update_Multilabel(target, multilabelling.get_Multilabel(argument))
+                multilabelling.update_Multilabel(target, multilabelling.get_Multilabel(argument), policy, multilabellingAssigned)
+                
+            multilabellingAssigned.update_Multilabel(target, multilabelling.get_Multilabel(target), policy, multilabellingAssigned)    
+            
 
+            
             patterns_where_target_is_sink = policy.get_patterns_where_value_is_sink(target)
             
             if len(patterns_where_target_is_sink) > 0:
                 target_multilabel = multilabelling.get_Multilabel(target)
                 for pattern in patterns_where_target_is_sink:
-                    if target_multilabel.get_label(pattern.get_vulnerability()) != None and target_multilabel.get_label(pattern.get_vulnerability()).get_sources() != []:
+                    # linhas seguintes 5 sao para unsanitized flow, possivelmente vao sair
+                    for argument in arguments:
+                        labels_sanitized_flows = list()
+                        for argument1 in arguments:
+                            if multilabelling.get_Multilabel(argument1) != None and (multilabelling.get_Multilabel(argument1).get_label(pattern.get_vulnerability())) != None:   
+                                labels_sanitized_flows.append(multilabelling.get_Multilabel(argument1).get_label(pattern.get_vulnerability()))  
+                        if target_multilabel.get_label(pattern.get_vulnerability()) != None and target_multilabel.get_label(pattern.get_vulnerability()).get_sources() != []:
                         # significa que temos de adicionar uma vulnerabilidade
-                        vulnerabilities.create_vulnerability(multilabelling, pattern, target, self.line_number, target) # funçao tem de ir buscar o label do padrao para cada argumento 
+                            vulnerabilities.create_vulnerability(multilabelling, pattern, target, self.line_number, target, labels_sanitized_flows) # funçao tem de ir buscar o label do padrao para cada argumento 
                                                                                                                             #e escrever as vulnerabilidades com target é o sink
 
-        return
+        if len(targets) > 1:
+            for key, value in policy.uninstantiated_vars.items():
+                if targets[1] in value:
+                    policy.uninstantiated_vars[key].remove(target[1])  
+        else:
+            for key, value in policy.uninstantiated_vars.items():
+                if targets[0] in value:
+                    policy.uninstantiated_vars[key].remove(target[0]) 
+
+        args = targets
+
+        return args

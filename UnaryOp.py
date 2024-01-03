@@ -7,11 +7,9 @@ class UnaryOp:
     def __repr__(self):
         return f"UnaryOp({self.op} , {self.operand})"
     
-    def eval(self, policy, multilabelling, vulnerabilities):
-        print(repr(self))
-        
+    def eval(self, policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel):        
         arguments = []
-        operand_result = self.operand.eval(policy, multilabelling, vulnerabilities)
+        operand_result = self.operand.eval(policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel)
         
         if isinstance(operand_result, list):
             arguments.extend(operand_result)

@@ -12,18 +12,20 @@ class Name:
     def get_name_value(self):
         return self.value
     
-    def eval(self,  policy, multilabelling, vulnerabilities):
-
-        print(repr(self))
-
+    def eval(self,  policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel):
         patterns_where_is_source = policy.get_patterns_where_value_is_source(self.value)
         multiLabel = MultiLabel()
 
         for pattern in patterns_where_is_source:
             label = Label()
             label.add_source(self.value, self.line_number)
-            multiLabel.add_label(pattern.get_vulnerability(), label)
-
-        multilabelling.update_Multilabel(self.value, multiLabel)
+            multiLabel.add_label(pattern.get_vulnerability(), label, policy, multilabellingAssigned)
+            
+        
+        
+        multilabelling.update_Multilabel(self.value, multiLabel, policy, multilabellingAssigned)
+        if implicit_multilabel.multilabels_mapping != {}:
+            for key, value in implicit_multilabel.multilabels_mapping.items():
+                multilabelling.update_Multilabel(self.value, value, policy, multilabellingAssigned)
 
         return self.value

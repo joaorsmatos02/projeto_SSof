@@ -9,5 +9,5 @@ class Expr:
     def __repr__(self):
         return f"Expr( {self.values_dict.__repr__()} )"
     
-    def eval(self,  policy, multilabelling, vulnerabilities):
-        return self.values_dict.eval(policy, multilabelling, vulnerabilities)
+    def eval(self,  policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel):
+        return self.values_dict.eval(policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel)

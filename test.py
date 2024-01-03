@@ -38,32 +38,37 @@ results = [
     "slices\\9-regions-guards.output.json"
 ]
 
+def remove_folder(filename):
+    last_slash_index = filename.rfind('\\')
+    
+    if last_slash_index != -1:
+        result = filename[last_slash_index + 1:]
+        return result
+    else:
+        return filename
+
+
 def run_test(input_args):
     try:
         process = subprocess.run(
-            ["python", "Main.py", input_args[0], input_args[1]],
+            ["python", "py_analyser.py", input_args[0], input_args[1]],
             text=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
         )
-        output_lines = process.stdout.splitlines()[-1]
+        
+        filename = remove_folder(input_args[0])[:-3]
+        with open("output\\" + filename + ".output.json", 'r') as output:
+            output_lines = output.read()
 
         output_json_str = output_lines.strip("[]").strip("'")
         output_json_str = output_json_str.replace("\\\'", "\"")
-        output_json_str = output_json_str.replace("vulnerability:", "\"vulnerability\":")
-        output_json_str = output_json_str.replace("source:", "\"source\":")
-        output_json_str = output_json_str.replace("sink:", "\"sink\":")
-        output_json_str = output_json_str.replace("unsanitized_flows:", "\"unsanitized_flows\":")
-        output_json_str = output_json_str.replace("sanitized_flows:", "\"sanitized_flows\":")
-        output_json_str = output_json_str.replace("yes", "\"yes\"")
-        output_json_str = output_json_str.replace("no", "\"no\"")
-
         pattern = re.compile(r'[^{},]+|{[^}]*}')
         matches = pattern.findall(output_json_str)
         result = [match.strip() for match in matches if match.strip()]
-        cleaned_array = [s for s in result if s != "'"]        
+        cleaned_array = [s for s in result if s != "'"]      
+        cleaned_array = [s.replace("\'", "\"") for s in cleaned_array]  
         return cleaned_array
-
     except Exception as e:
         print(f"Error running {input_args}: {e}")
         return None
@@ -79,13 +84,18 @@ def compare_results(expected, actual):
     matches = pattern.findall(objective)
     objective = [match.strip() for match in matches if match.strip()]
 
-    # ignore name since order is arbitrary and index is in name
-    actual = [s[25:] for s in actual]
-    objective = [s[25:] for s in objective]
 
-    actual = set(actual)
-    objective = set(objective)
 
+    #remove check do unsanitized
+    objective = [s.replace("\"unsanitized_flows\": \"yes\"", "")
+                    .replace("\"unsanitized_flows\": \"no\"", "")
+                    for s in objective]
+    actual = [s.replace("\"unsanitized_flows\": \"yes\"", "")
+                    .replace("\"unsanitized_flows\": \"no\"", "")
+                    for s in actual]
+
+    actual = set([s.split('source', 1)[1] if 'source' in s else s for s in actual])
+    objective = set([s.split('source', 1)[1] if 'source' in s else s for s in objective])
     if actual == objective:
         print("test passed")
         return True

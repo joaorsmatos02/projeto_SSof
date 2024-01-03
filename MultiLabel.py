@@ -1,13 +1,14 @@
 from Label import Label
+from Policy import Policy
 
 class MultiLabel:
     def __init__(self):
         self.labels = {}
 
-    def add_label(self, pattern_name, label):
+    def add_label(self, pattern_name, label, policy, multilabellingAssigned):
         if pattern_name not in self.labels:
             self.labels[pattern_name] = Label()
-        self.labels[pattern_name] = self.labels[pattern_name].combine_labels(label)
+        self.labels[pattern_name] = self.labels[pattern_name].combine_labels(label, policy, pattern_name, multilabellingAssigned)
 
     def get_label(self, pattern_name):
         return self.labels.get(pattern_name, None)
@@ -23,13 +24,13 @@ class MultiLabel:
         if pattern_name in self.labels:
             self.labels[pattern_name].add_sanitizer(sanitizer_name, line_number)
 
-    def combine_multilabels(self, other_multilabel):
+    def combine_multilabels(self, other_multilabel, policy, multilabellingAssigned):
         new_multi_label = MultiLabel()
         for pattern_name, label in self.labels.items():
-            new_multi_label.add_label(pattern_name, label)
+            new_multi_label.add_label(pattern_name, label, policy, multilabellingAssigned)
             
         if (other_multilabel != None) :
             for pattern_name, label in other_multilabel.labels.items():
-                new_multi_label.add_label(pattern_name, label)
+                new_multi_label.add_label(pattern_name, label, policy, multilabellingAssigned)
         
         return new_multi_label

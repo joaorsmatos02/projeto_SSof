@@ -23,10 +23,9 @@ class Attribute:
     def is_callable(self):
         self.isCallable = True
     
-    def eval(self, policy, multilabelling, vulnerabilities):
-        print(repr(self))
+    def eval(self, policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel):
         
-        value_eval = self.value.eval(policy, multilabelling, vulnerabilities)
+        value_eval = self.value.eval(policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel)
         
         #check if the left part of the attributte is uninstatiated
         all_patterns = policy.getAllPatterns()
@@ -36,7 +35,7 @@ class Attribute:
                 policy.addUninstantiatedVars(pattern.get_vulnerability(), self.value.value)
                 new_label = Label()
                 new_label.add_source(self.value.value, self.line_number)
-                multilabelling.get_Multilabel(self.value.value).add_label(pattern.get_vulnerability(), new_label)
+                multilabelling.get_Multilabel(self.value.value).add_label(pattern.get_vulnerability(), new_label, policy, multilabellingAssigned)
                 #multilabelling.update_Multilabel(self.attribute,  multilabelling.get_Multilabel(self.value.value))
         
         
@@ -46,9 +45,9 @@ class Attribute:
         for pattern in patterns_where_is_source:
             label = Label()
             label.add_source(self.attribute, self.line_number)
-            multiLabel.add_label(pattern.get_vulnerability(), label)
+            multiLabel.add_label(pattern.get_vulnerability(), label, policy, multilabellingAssigned)
 
-        multilabelling.update_Multilabel(self.attribute, multiLabel)
+        multilabelling.update_Multilabel(self.attribute, multiLabel, policy, multilabellingAssigned)
         
         if not isinstance(value_eval, list):
             value_eval = [value_eval]

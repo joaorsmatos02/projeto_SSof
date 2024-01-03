@@ -10,18 +10,17 @@ class BinOp:
     def __repr__(self):
         return f"BinOp({self.left} , {self.op}, {self.right} )"
     
-    def eval(self, policy, multilabelling, vulnerabilities):
+    def eval(self, policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel):
         arguments = []
-        print(repr(self))
         
-        left_result = self.left.eval(policy, multilabelling, vulnerabilities)
+        left_result = self.left.eval(policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel)
         
         if isinstance(left_result, list):
             arguments.extend(left_result)
         else:
             arguments.append(left_result)
         
-        right_result = self.right.eval(policy, multilabelling, vulnerabilities)
+        right_result = self.right.eval(policy, multilabelling, vulnerabilities, multilabellingAssigned, implicit_multilabel)
         
         if isinstance(right_result, list):
             arguments.extend(right_result)
