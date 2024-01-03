@@ -1,6 +1,7 @@
 import sys
 import json
 import copy
+import os
 from Attribute import Attribute
 from BoolOp import BoolOp
 from Compare import Compare
@@ -61,6 +62,15 @@ def run_ast_dict(ast_dict):
         return While(run_ast_dict(ast_dict["test"]), list(map(lambda n: run_ast_dict(n), ast_dict["body"])), ast_dict["lineno"])
     
 
+def remove_folder(filename):
+    last_slash_index = filename.rfind('\\')
+    
+    if last_slash_index != -1:
+        result = filename[last_slash_index + 1:]
+        return result
+    else:
+        return filename
+
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage: python script.py arg1 arg2")
@@ -120,7 +130,15 @@ if __name__ == "__main__":
                 i += len(eval_result) - 1
                 notLists = False
     
-    print(vulnerability.get_vulnerabilities_print())
 
-# criar multilabel com os padroes do policy, passamos a policy e combinar labels quando temos dois argumentos, retornando, e no fim da linha atualizar multilabelling
-# classes com mais de um argumento sem ser name e constant temos de chamar o eval do argumentos        
+    output = vulnerability.get_vulnerabilities_dict()
+    filename = remove_folder(sys.argv[1])[:-3]
+
+    if not os.path.exists("output"):
+        os.makedirs("output")
+
+    with open("output\\" + filename + ".output.json", 'w') as json_file:
+        json.dump(output, json_file)
+                
+    #print(vulnerability.get_vulnerabilities_dict())
+
