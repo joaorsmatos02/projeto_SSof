@@ -5,7 +5,7 @@
 
 This project is aimed at achieving an in-depth understanding of security issues in Python web applications.
 
-##Unsanitized Flows: Implementation Note
+## Unsanitized Flows: Implementation Note
 
 The current representation of unsanitized_flows may not accurately reflect the intended logic due to time constraints in completing the implementation. The envisioned approach involves leveraging a dedicated class to handle unsanitized flows.
 
