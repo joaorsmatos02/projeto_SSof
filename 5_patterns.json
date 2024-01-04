@@ -1,0 +1,43 @@
+[
+    {
+      "vulnerability": "Code Injection",
+      "sources": ["input", "file_reads"],
+      "sanitizers": ["input_validation", "sanitization"],
+      "sinks": ["eval", "exec"],
+      "implicit": "no"
+      // User input or file reads directly used in eval or exec functions.
+    },
+    {
+      "vulnerability": "Cross-Site Scripting (XSS)",
+      "sources": ["web_forms", "cookies"],
+      "sanitizers": ["html_encoding", "escaping"],
+      "sinks": ["print", "web_response"],
+      "implicit": "no"
+      // Untrusted user input from web forms or cookies included in print or web response functions without proper encoding.
+    },
+    {
+      "vulnerability": "Command Injection",
+      "sources": ["user_inputs", "file_reads"],
+      "sanitizers": ["input_validation", "sanitization"],
+      "sinks": ["os_system", "subprocess_Popen"],
+      "implicit": "no"
+      // User inputs or file reads used in os_system or subprocess_Popen functions without proper validation.
+    },
+    {
+      "vulnerability": "Path Traversal",
+      "sources": ["user_inputs", "file_reads"],
+      "sanitizers": ["input_validation", "sanitization"],
+      "sinks": ["open", "os_path_join"],
+      "implicit": "no"
+      // User inputs or file reads used in open or os_path_join functions without proper validation.
+    },
+    {
+      "vulnerability": "SQL Injection",
+      "sources": ["web_forms", "cookies"],
+      "sanitizers": ["sql_parameterization", "input_validation"],
+      "sinks": ["execute", "fetch"],
+      "implicit": "no"
+      // Untrusted user input from web forms or cookies directly included in SQL queries without proper parameterization.
+    }
+  ]
+  
